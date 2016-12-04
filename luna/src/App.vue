@@ -2,7 +2,7 @@
     <div id="app">
         <Toolbar></Toolbar>
         <div id="main">
-            <ChatBox></ChatBox>
+            <router-view></router-view>
         </div>
     </div>
 </template>
