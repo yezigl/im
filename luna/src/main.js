@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import VueResource from 'vue-resource'
 
 import App from './App'
 import ChatBox from './components/chat/ChatBox'
@@ -24,7 +25,7 @@ const router = new VueRouter({
     ]
 });
 
-Vue.use(VueRouter);
+Vue.use(VueRouter).use(VueResource);
 new Vue({
     el: '#app',
     template: '<App/>',
