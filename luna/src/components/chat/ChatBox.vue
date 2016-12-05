@@ -1,10 +1,12 @@
 <template>
     <div>
-        <div class="wrapper-chatbox">
-            <SearchBox></SearchBox>
-            <ChatList></ChatList>
+        <div class="chatbox-wrapper">
+            <div class="chatbox">
+                <SearchBox></SearchBox>
+                <ChatList></ChatList>
+            </div>
         </div>
-        <div class="wrapper-messagebox">
+        <div class="messagebox-wrapper">
             <MessageBox></MessageBox>
         </div>
     </div>
@@ -23,15 +25,25 @@ export default {
 </script>
 
 <style scoped>
-.wrapper-chatbox {
+.chatbox-wrapper {
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
-.wrapper-messagebox {
+.chatbox {
+    position: absolute;
+    width: 280px;
+    height: 100%;
+    background-color: #E8EBEF;
+    border-right: 1px solid #D1D4D8;
+    z-index: 1;
+}
+
+.messagebox-wrapper {
     position: absolute;
     width: 100%;
     height: 100%;
+    background-color: #E8EBEF;
 }
 </style>

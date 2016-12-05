@@ -9,17 +9,18 @@
 
 <script>
 import Toolbar from './components/Toolbar'
-import ChatBox from './components/chat/ChatBox'
 
 export default {
     name: 'app',
     components: {
-        Toolbar, ChatBox
+        Toolbar
     }
 }
 </script>
 
 <style>
+@import "../static/css/bootstrap.css";
+
 html, body {
     width: 100%;
     height: 100%;
@@ -38,5 +39,14 @@ html, body {
     top: 0;
     right: 0;
     bottom: 0;
+}
+
+.large-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.avatar {
+    border-radius: 50%;
 }
 </style>
