@@ -1,11 +1,11 @@
 <template>
     <div class="search-wrapper">
         <div class="search">
-            <span class="glyphicon glyphicon-search icon" aria-hidden="true"></span>
+            <span class="fa fa-search icon" aria-hidden="true"></span>
             <input type="text" name="search">
         </div>
         <div class="addchat">
-            <span class="glyphicon glyphicon-plus-sign"></span>
+            <span class="fa fa-user-plus"></span>
         </div>
     </div>
 </template>
@@ -51,7 +51,7 @@ export default {
 .search-wrapper .addchat {
     color: #ccc;
     display: inline-block;
-    font-size: 22px;
+    font-size: 20px;
     vertical-align: middle;
     height: 30px;
     cursor: pointer;

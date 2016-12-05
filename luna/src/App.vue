@@ -20,6 +20,7 @@ export default {
 
 <style>
 @import "../static/css/bootstrap.css";
+@import "../static/css/font-awesome.min.css";
 
 html, body {
     width: 100%;

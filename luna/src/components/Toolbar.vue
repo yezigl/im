@@ -4,28 +4,40 @@
             <img class="large-avatar avatar" src="http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200" />
         </div>
         <div class="tool">
-            <div class="app-item active">
+            <div class="app-item" @click="changeToolbar('chat')" v-bind:class="{ 'active': type == 'chat' }">
                 <div class="activebar"></div>
-                <a href="/#/chat">消息</a>
+                <a href="/#/chat"><i class="fa fa-comments"></i></a>
             </div>
-            <div class="app-item">
+            <div class="app-item" @click="changeToolbar('group')" v-bind:class="{ 'active': type == 'group' }">
                 <div class="activebar"></div>
-                <a href="/#/group">群组</a>
+                <a href="/#/group"><i class="fa fa-group"></i></a>
             </div>
-            <div class="app-item">
+            <div class="app-item" @click="changeToolbar('roster')" v-bind:class="{ 'active': type == 'roster' }">
                 <div class="activebar"></div>
-                <a href="/#/roster">通讯录</a>
+                <a href="/#/roster"><i class="fa fa-sitemap"></i></a>
             </div>
         </div>
         <div class="settings">
-            <div class="app-item">设置</div>
+            <div class="app-item" @click="changeToolbar('settings')" v-bind:class="{ 'active': type == 'settings' }">
+                <div class="activebar"></div>
+                <a href="/#/settings"><i class="fa fa-cog"></i></a>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-
+    data: function() {
+        return {
+            type: 'chat'
+        };
+    },
+    methods: {
+        changeToolbar: function(type) {
+            this.type = type;
+        }
+    }
 }
 </script>
 
@@ -56,11 +68,13 @@ export default {
     text-align: center;
     cursor: pointer;
     color: #fff;
+    font-size: 20px;
 }
 
 .app-item a {
     color: #ccc;
     text-decoration: none;
+    display: block;
 }
 
 .app-item:HOVER, .app-item.active {

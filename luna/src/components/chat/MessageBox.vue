@@ -4,38 +4,66 @@
             <div class="title">
                 <span>你的名字</span>
             </div>
-            <div class="profile show-sidebar">
-                <span class="glyphicon glyphicon-user"></span>
+            <div class="profile" v-bind:class="{ 'show-sidebar': showSidebar }">
+                <span class="fa fa-user" v-on:click="toggleSidebar"></span>
                 <span class="arrow-top"></span>
             </div>
         </div>
-        <div class="message-wrapper show-sidebar">
+        <div class="message-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
             <div class="message-list">
 
             </div>
             <div class="sendbox">
                 <div class="tool-wrapper">
-                    <span class="emoji"></span>
-                    <span class="fileupload"></span>
+                    <span class="emoji">
+                        <i class="fa fa-smile-o" @click="showEmoji"></i>
+                    </span>
+                    <span class="fileupload">
+                        <i class="fa fa-cloud-upload" @click="uploadFile"></i>
+                        <input type="file" id="uploadFile" @change="onAddFile" style="display: none">
+                    </span>
                 </div>
                 <div class="input-wrapper">
-                    <textarea placeholder="说点什么……"></textarea>
+                    <textarea id="inputText" name="inputText" v-model="inputText" placeholder="说点什么……"></textarea>
                 </div>
                 <div class="send-wrapper">
                     <div>
                         <span class="send-tip">Shift + Enter 换行, Enter 发送</span>
-                        <button type="button" class="send-button button button-primary button-sm">发&nbsp;送</button>
+                        <button type="button" @click="sendMessage" class="send-button button button-primary button-sm">发&nbsp;送</button>
                     </div>
                 </div>
             </div>
-            <div class="sidebar"></div>
+            <div v-if="showSidebar" class="sidebar"></div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-
+    name: 'MessageBox',
+    data: function() {
+        return {
+            showSidebar: true,
+            inputText: ''
+        };
+    },
+    methods: {
+        toggleSidebar: function() {
+            this.showSidebar = !this.showSidebar;
+        },
+        showEmoji: function() {
+            alert("to be continue");
+        },
+        uploadFile: function() {
+            document.getElementById('uploadFile').click();
+        },
+        onAddFile: function(event) {
+            console.log(document.getElementById('uploadFile'))
+        },
+        sendMessage: function() {
+            alert("to be continue");
+        }
+    }
 }
 </script>
 
@@ -60,11 +88,11 @@ export default {
 
 .title-wrapper .profile {
     position: absolute;
-    right: 20px;
+    right: 30px;
     top: 0;
     color: #ccc;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 22px;
 }
 
 .title-wrapper .arrow-top {
@@ -107,6 +135,22 @@ export default {
 
 .tool-wrapper {
     height: 30px;
+    line-height: 30px;
+}
+
+.tool-wrapper i {
+    color: #ccc;
+    cursor: pointer;
+}
+
+.tool-wrapper .emoji {
+    margin-left: 20px;
+    font-size: 22px;
+}
+
+.tool-wrapper .fileupload {
+    margin-left: 6px;
+    font-size: 20px;
 }
 
 .input-wrapper {
