@@ -4,23 +4,23 @@
             <img class="large-avatar avatar" src="http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200" />
         </div>
         <div class="tool">
-            <div class="app-item" @click="changeToolbar('chat')" v-bind:class="{ 'active': type == 'chat' }">
+            <div class="app-item" title="消息" v-bind:class="{ 'active': type == 'chat' }">
                 <div class="activebar"></div>
-                <a href="/#/chat"><i class="fa fa-comments"></i></a>
+                <a href="/#/chat" @click="changeToolbar('chat')"><i class="fa fa-comments"></i></a>
             </div>
-            <div class="app-item" @click="changeToolbar('group')" v-bind:class="{ 'active': type == 'group' }">
+            <div class="app-item" title="群组" v-bind:class="{ 'active': type == 'group' }">
                 <div class="activebar"></div>
-                <a href="/#/group"><i class="fa fa-group"></i></a>
+                <a href="/#/group" @click="changeToolbar('group')"><i class="fa fa-group"></i></a>
             </div>
-            <div class="app-item" @click="changeToolbar('roster')" v-bind:class="{ 'active': type == 'roster' }">
+            <div class="app-item" title="通讯录" v-bind:class="{ 'active': type == 'roster' }">
                 <div class="activebar"></div>
-                <a href="/#/roster"><i class="fa fa-sitemap"></i></a>
+                <a href="/#/roster" @click="changeToolbar('roster')"><i class="fa fa-sitemap"></i></a>
             </div>
         </div>
         <div class="settings">
-            <div class="app-item" @click="changeToolbar('settings')" v-bind:class="{ 'active': type == 'settings' }">
+            <div class="app-item" title="设置" v-bind:class="{ 'active': type == 'settings' }">
                 <div class="activebar"></div>
-                <a href="/#/settings"><i class="fa fa-cog"></i></a>
+                <a href="/#/settings" @click="changeToolbar('settings')"><i class="fa fa-cog"></i></a>
             </div>
         </div>
     </div>
@@ -29,8 +29,9 @@
 <script>
 export default {
     data: function() {
+        var match = /#\/(\w+)(\/.*)?/.exec(location.hash);
         return {
-            type: 'chat'
+            type: match ? match[1] : 'chat'
         };
     },
     methods: {
@@ -95,8 +96,7 @@ export default {
 .settings {
     position: absolute;
     bottom: 0px;
-    width: 60px;
-    padding-top: 10px;
+    width: 100%;
     border-top: 1px solid #3F5063;
 }
 

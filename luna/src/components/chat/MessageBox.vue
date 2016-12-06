@@ -19,7 +19,7 @@
                         <i class="fa fa-smile-o" @click="showEmoji"></i>
                     </span>
                     <span class="fileupload">
-                        <i class="fa fa-cloud-upload" @click="uploadFile"></i>
+                        <i class="fa fa-file-o" @click="uploadFile"></i>
                         <input type="file" id="uploadFile" @change="onAddFile" style="display: none">
                     </span>
                 </div>
@@ -44,7 +44,8 @@ export default {
     data: function() {
         return {
             showSidebar: true,
-            inputText: ''
+            inputText: '',
+            imageRegExp: /(gif|jpeg|jpg|png|bmp)$/
         };
     },
     methods: {
@@ -58,7 +59,12 @@ export default {
             document.getElementById('uploadFile').click();
         },
         onAddFile: function(event) {
-            console.log(document.getElementById('uploadFile'))
+            var fileName = event.target.files[0].name;
+            if (this.imageRegExp.test(fileName)) {
+                alert("send image")
+            } else {
+                alert("send normal file")
+            }
         },
         sendMessage: function() {
             alert("to be continue");
