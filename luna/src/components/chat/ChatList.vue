@@ -1,7 +1,7 @@
 <template>
     <div class="chatlist-wrapper">
         <ul class="chatlist">
-            <li class="chat" v-for="chat in chatList" @click="showChat(chat.id)" v-bind:class="{'selected': showChatId == chat.id}">
+            <li class="chat" v-for="(chat, index) in chatList" @click="showChat(chat.id, index)" v-bind:class="{'selected': chatId == chat.id}">
                 <div>
                     <img class="large-avatar avatar" :src="chat.avatar">
                 </div>
@@ -30,12 +30,20 @@ export default {
     data: function() {
         return {
             chatList: [],
-            showChatId: 0
+            chatId: 0
         };
     },
     methods: {
-        showChat: function(id) {
-            this.showChatId = id;
+        showChat: function(id, index) {
+            if (id == 0) {
+                return;
+            }
+            this.chatId = id;
+            if (index !== undefined) {
+                this.chatList[index].unread = 0;
+            }
+            location.href = '/#/chat/' + id;
+            this.$emit('showChat', id);
         }
     },
     mounted: function() {
@@ -43,7 +51,7 @@ export default {
             {
                 id: 1000,
                 avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile4/99287bb1-8aea-47c6-b628-eaa5d3d496d5',
-                unread: 0,
+                unread: 99,
                 name: '张三、李四、王五',
                 lastName: '张三',
                 lastContent: '没事 这个不影响发布',
@@ -60,6 +68,8 @@ export default {
                 group: false
             }
         ];
+        var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
+        this.showChat(match ? match[2] : 0);
     }
 }
 </script>
@@ -138,5 +148,22 @@ export default {
     top: 15px;
     font-size: 12px;
     line-height: 18px;
+}
+
+.chat .chat-badge {
+    position: absolute;;
+    min-width: 10px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    left: 15px;
+    top: 10px;
+    text-align: center;
+    font-size: 10px;
+    color: #fff;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: red;
+    border-radius: 50%;
 }
 </style>

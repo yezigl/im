@@ -3,11 +3,12 @@
         <div class="chatbox-wrapper">
             <div class="chatbox">
                 <SearchBox></SearchBox>
-                <ChatList></ChatList>
+                <ChatList @showChat="showChat"></ChatList>
             </div>
         </div>
         <div class="messagebox-wrapper">
-            <MessageBox></MessageBox>
+            <Empty v-if="chatId == 0"></Empty>
+            <MessageBox v-else></MessageBox>
         </div>
     </div>
 </template>
@@ -16,10 +17,21 @@
 import SearchBox from './SearchBox'
 import ChatList from './ChatList'
 import MessageBox from './MessageBox'
+import Empty from '../common/Empty'
 
 export default {
+    data: function() {
+        return {
+            chatId: 0
+        };
+    },
     components: {
-        SearchBox, ChatList, MessageBox
+        SearchBox, ChatList, MessageBox, Empty
+    },
+    methods: {
+        showChat: function(id) {
+            this.chatId = id;
+        }
     }
 }
 </script>
