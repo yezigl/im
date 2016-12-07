@@ -2,7 +2,7 @@
     <div class="messagebox">
         <div class="title-wrapper head-wrapper">
             <div class="title">
-                <span>你的名字</span>
+                <span>{{personInfo.name}}</span>
             </div>
             <div class="profile" v-bind:class="{ 'show-sidebar': showSidebar }">
                 <span class="fa fa-user" v-on:click="toggleSidebar"></span>
@@ -33,19 +33,28 @@
                     </div>
                 </div>
             </div>
-            <div v-if="showSidebar" class="sidebar"></div>
+            <div v-if="showSidebar" class="sidebar">
+                <ProfileBar></ProfileBar>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import ProfileBar from './ProfileBar'
+import GroupBar from './GroupBar'
+
 export default {
     name: 'MessageBox',
+    components : {
+        ProfileBar
+    },
     data: function() {
         return {
             showSidebar: true,
             inputText: '',
-            imageRegExp: /(gif|jpeg|jpg|png|bmp)$/
+            imageRegExp: /(gif|jpeg|jpg|png|bmp)$/,
+            personInfo: {}
         };
     },
     methods: {

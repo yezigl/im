@@ -1,42 +1,24 @@
 <template>
     <div class="chatlist-wrapper">
         <ul class="chatlist">
-            <li class="chat">
+            <li class="chat" v-for="chat in chatList" @click="showChat(chat.id)" v-bind:class="{'selected': showChatId == chat.id}">
                 <div>
-                    <img class="large-avatar avatar" src="http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile4/99287bb1-8aea-47c6-b628-eaa5d3d496d5">
+                    <img class="large-avatar avatar" :src="chat.avatar">
                 </div>
-                <div class="chat-badge hide">
-                    <span class="badge-num">0</span>
+                <div class="chat-badge" v-bind:class="{'hide': chat.unread == 0}">
+                    <span class="badge-num">{{chat.unread}}</span>
                 </div>
                 <div class="name">
                     <span class="content">
-                        <span>辛孟莹、李德华、于吉星</span>
+                        <span>{{chat.name}}</span>
                         <span>&nbsp;&nbsp;</span>
                     </span>
                 </div>
                 <div class="desc">
-                    <span>于吉星：</span>
-                    <span>没事 这个不影响发布</span>
+                    <span v-if="chat.group">{{chat.lastName}}：</span>
+                    <span>{{chat.lastContent}}</span>
                 </div>
-                <span class="time">昨天</span>
-            </li>
-            <li class="chat selected">
-                <div>
-                    <img class="large-avatar avatar" src="http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile9/1129f264-bdab-43be-a481-23fd69020aaa">
-                </div>
-                <div class="chat-badge hide">
-                    <span class="badge-num">0</span>
-                </div>
-                <div class="name">
-                    <span class="content">
-                        <span>于吉星</span>
-                        <span>&nbsp;&nbsp;</span>
-                    </span>
-                </div>
-                <div class="desc">
-                    <span>没事 这个不影响发布</span>
-                </div>
-                <span class="time">16/9/21</span>
+                <span class="time">{{chat.time}}</span>
             </li>
         </ul>
     </div>
@@ -44,7 +26,41 @@
 
 <script>
 export default {
-
+    name: 'ChatList',
+    data: function() {
+        return {
+            chatList: [],
+            showChatId: 0
+        };
+    },
+    methods: {
+        showChat: function(id) {
+            this.showChatId = id;
+        }
+    },
+    mounted: function() {
+        this.chatList = [
+            {
+                id: 1000,
+                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile4/99287bb1-8aea-47c6-b628-eaa5d3d496d5',
+                unread: 0,
+                name: '张三、李四、王五',
+                lastName: '张三',
+                lastContent: '没事 这个不影响发布',
+                time: '昨天',
+                group: true
+            }, {
+                id: 1001,
+                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile9/1129f264-bdab-43be-a481-23fd69020aaa',
+                unread: 0,
+                name: '张三',
+                lastName: '张三',
+                lastContent: '没事 这个不影响发布',
+                time: '16/9/21',
+                group: false
+            }
+        ];
+    }
 }
 </script>
 

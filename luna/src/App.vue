@@ -45,6 +45,13 @@ html, body {
 .large-avatar {
     width: 40px;
     height: 40px;
+    border: 1px solid rgba(0,0,0,.05);
+}
+
+.xlarge-avatar {
+    width: 80px;
+    height: 80px;
+    border: 1px solid rgba(0,0,0,.05);
 }
 
 .avatar {

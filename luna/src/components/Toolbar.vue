@@ -1,7 +1,7 @@
 <template>
     <div id="toolbar">
-        <div class="userinfo">
-            <img class="large-avatar avatar" src="http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200" />
+        <div class="userinfo" :title="userInfo.name">
+            <img class="large-avatar avatar" :src="userInfo.avatar" />
         </div>
         <div class="tool">
             <div class="app-item" title="消息" v-bind:class="{ 'active': type == 'chat' }">
@@ -28,15 +28,24 @@
 
 <script>
 export default {
+    name: 'Toolbar',
     data: function() {
         var match = /#\/(\w+)(\/.*)?/.exec(location.hash);
         return {
-            type: match ? match[1] : 'chat'
+            type: match ? match[1] : 'chat',
+            userInfo: {}
         };
     },
     methods: {
         changeToolbar: function(type) {
             this.type = type;
+        }
+    },
+    mounted: function() {
+        this.userInfo = {
+            id: 1000,
+            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
+            name: '李四'
         }
     }
 }
@@ -56,6 +65,7 @@ export default {
     text-align: center;
     vertical-align: middle;
     border-bottom: 1px solid #3F5063;
+    cursor: pointer;
 }
 
 .tool {
