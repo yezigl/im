@@ -9,9 +9,9 @@
                 <span class="arrow-top"></span>
             </div>
         </div>
-        <div class="message-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
-            <div class="message-list">
-
+        <div class="message-list-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
+            <div class="message-list-inner">
+                <MessageList></messageList>
             </div>
             <div class="sendbox">
                 <div class="tool-wrapper">
@@ -43,11 +43,12 @@
 <script>
 import ProfileBar from './ProfileBar'
 import GroupBar from './GroupBar'
+import MessageList from './MessageList'
 
 export default {
     name: 'MessageBox',
     components : {
-        ProfileBar
+        ProfileBar, GroupBar, MessageList
     },
     data: function() {
         return {
@@ -127,7 +128,7 @@ export default {
     display: block;
 }
 
-.message-wrapper {
+.message-list-wrapper {
     position: absolute;
     width: 100%;
     color: rgba(0,0,0,.87);
@@ -135,7 +136,17 @@ export default {
     bottom: 0;
 }
 
-.show-sidebar message-list, .show-sidebar .sendbox {
+.message-list-inner {
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    bottom: 140px;
+    left: 0;
+    right: 0;
+    padding: 0;
+}
+
+.show-sidebar .message-list-inner, .show-sidebar .sendbox {
     right: 240px;
 }
 

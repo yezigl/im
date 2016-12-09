@@ -54,6 +54,12 @@ html, body {
     border: 1px solid rgba(0,0,0,.05);
 }
 
+.medium-avatar {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(0,0,0,.05);
+}
+
 .avatar {
     border-radius: 50%;
 }

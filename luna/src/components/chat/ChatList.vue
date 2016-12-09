@@ -15,7 +15,7 @@
                     </span>
                 </div>
                 <div class="desc">
-                    <span v-if="chat.group">{{chat.lastName}}：</span>
+                    <span v-if="chat.type == Session.GROUPCHAT">{{chat.lastName}}：</span>
                     <span>{{chat.lastContent}}</span>
                 </div>
                 <span class="time">{{chat.time}}</span>
@@ -25,12 +25,15 @@
 </template>
 
 <script>
+import IMSDK from '../../IMSDK'
+
 export default {
     name: 'ChatList',
     data: function() {
         return {
             chatList: [],
-            chatId: 0
+            chatId: 0,
+            Session: IMSDK.data.Session
         };
     },
     methods: {
@@ -56,7 +59,7 @@ export default {
                 lastName: '张三',
                 lastContent: '没事 这个不影响发布',
                 time: '昨天',
-                group: true
+                type: 'groupchat'
             }, {
                 id: 1001,
                 avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile9/1129f264-bdab-43be-a481-23fd69020aaa',
@@ -65,7 +68,7 @@ export default {
                 lastName: '张三',
                 lastContent: '没事 这个不影响发布',
                 time: '16/9/21',
-                group: false
+                type: 'chat'
             }
         ];
         var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
@@ -163,7 +166,7 @@ export default {
     color: #fff;
     white-space: nowrap;
     vertical-align: middle;
-    background-color: red;
+    background-color: #FF5D4A;
     border-radius: 50%;
 }
 </style>
