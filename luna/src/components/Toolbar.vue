@@ -1,26 +1,26 @@
 <template>
     <div id="toolbar">
         <div class="userinfo" :title="userInfo.name">
-            <img class="large-avatar avatar" :src="userInfo.avatar" />
+            <img class="large-avatar round-avatar" :src="userInfo.avatar" />
         </div>
         <div class="tool">
             <div class="app-item" title="消息" v-bind:class="{ 'active': type == 'chat' }">
                 <div class="activebar"></div>
-                <a href="/#/chat" @click="changeToolbar('chat')"><i class="fa fa-comments"></i></a>
+                <a href="/#/chat" @click="changeToolbar('chat')"><i class="iconfont icon-liaotian"></i></a>
             </div>
             <div class="app-item" title="群组" v-bind:class="{ 'active': type == 'group' }">
                 <div class="activebar"></div>
-                <a href="/#/group" @click="changeToolbar('group')"><i class="fa fa-group"></i></a>
+                <a href="/#/group" @click="changeToolbar('group')"><i class="iconfont icon-qunzu"></i></a>
             </div>
             <div class="app-item" title="通讯录" v-bind:class="{ 'active': type == 'roster' }">
                 <div class="activebar"></div>
-                <a href="/#/roster" @click="changeToolbar('roster')"><i class="fa fa-sitemap"></i></a>
+                <a href="/#/roster" @click="changeToolbar('roster')"><i class="iconfont icon-tongxunlu"></i></a>
             </div>
         </div>
         <div class="settings">
             <div class="app-item" title="设置" v-bind:class="{ 'active': type == 'settings' }">
                 <div class="activebar"></div>
-                <a href="/#/settings" @click="changeToolbar('settings')"><i class="fa fa-cog"></i></a>
+                <a href="/#/settings" @click="changeToolbar('settings')"><i class="iconfont icon-shezhi"></i></a>
             </div>
         </div>
     </div>

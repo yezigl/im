@@ -1,6 +1,8 @@
 <template>
-    <div class="groupinfo">
+    <div class="groupinfo-wrapper">
+        <div class="groupinfo">
 
+        </div>
     </div>
 </template>
 
@@ -11,6 +13,13 @@ export default {
 </script>
 
 <style scoped>
+.groupinfo-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #E8EBEF;
+}
+
 .groupinfo {
     position: absolute;
     left: 280px;

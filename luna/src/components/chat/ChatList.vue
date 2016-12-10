@@ -1,9 +1,9 @@
 <template>
     <div class="chatlist-wrapper">
         <ul class="chatlist">
-            <li class="chat" v-for="(chat, index) in chatList" @click="showChat(chat.id, index)" v-bind:class="{'selected': chatId == chat.id}">
-                <div>
-                    <img class="large-avatar avatar" :src="chat.avatar">
+            <li class="chat" v-for="(chat, index) in chatList" @click="showChat(chat, index)" v-bind:class="{'selected': chatId == chat.id}">
+                <div class="avatar">
+                    <img class="large-avatar round-avatar" :src="chat.avatar">
                 </div>
                 <div class="chat-badge" v-bind:class="{'hide': chat.unread == 0}">
                     <span class="badge-num">{{chat.unread}}</span>
@@ -37,16 +37,17 @@ export default {
         };
     },
     methods: {
-        showChat: function(id, index) {
-            if (id == 0) {
+        showChat: function(chat, index) {
+            if (!chat) {
+                location.href = '/#/';
                 return;
             }
-            this.chatId = id;
+            this.chatId = chat.id;
             if (index !== undefined) {
-                this.chatList[index].unread = 0;
+                chat.unread = 0;
             }
-            location.href = '/#/chat/' + id;
-            this.$emit('showChat', id);
+            location.href = '/#/chat/' + chat.id;
+            this.$emit('showChat', chat);
         }
     },
     mounted: function() {
@@ -72,7 +73,12 @@ export default {
             }
         ];
         var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
-        this.showChat(match ? match[2] : 0);
+        if (match) {
+            var filterd = this.chatList.filter(e => e.id == match[2]);
+            this.showChat(filterd.length == 0 ? null : filterd[0]);
+        } else {
+            this.showChat(null);
+        }
     }
 }
 </script>

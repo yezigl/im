@@ -1,6 +1,6 @@
 <template>
     <div class="personinfo-wrapper">
-        <img class="avatar xlarge-avatar" @click="showProfile" :src="personInfo.avatar" />
+        <img class="round-avatar xlarge-avatar" @click="showProfile" :src="personInfo.avatar" />
         <div class="personinfo">
             <div class="name">{{personInfo.name}}</div>
             <div class="email">{{personInfo.email}}</div>

@@ -1,11 +1,11 @@
 <template>
     <div class="search-wrapper">
         <div class="search">
-            <span class="fa fa-search icon" aria-hidden="true"></span>
+            <span class="icon iconfont icon-sousuo" aria-hidden="true"></span>
             <input type="text" name="search">
         </div>
         <div class="addchat">
-            <span class="fa fa-user-plus"></span>
+            <span class="iconfont icon-tianjiayonghu"></span>
         </div>
     </div>
 </template>
@@ -33,9 +33,10 @@ export default {
 
 .search .icon {
     position: absolute;
-    top: 8px;
+    top: 4px;
     left: 4px;
     color: #999;
+    font-size: 16px;
 }
 
 .search input {

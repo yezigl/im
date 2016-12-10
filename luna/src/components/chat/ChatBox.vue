@@ -7,8 +7,8 @@
             </div>
         </div>
         <div class="messagebox-wrapper">
-            <Empty v-if="chatId == 0"></Empty>
-            <MessageBox v-else></MessageBox>
+            <Empty v-if="currentChat.id == 0"></Empty>
+            <MessageBox v-else v-bind:currentChat="currentChat"></MessageBox>
         </div>
     </div>
 </template>
@@ -22,15 +22,17 @@ import Empty from '../common/Empty'
 export default {
     data: function() {
         return {
-            chatId: 0
+            currentChat: {
+                id: 0
+            }
         };
     },
     components: {
         SearchBox, ChatList, MessageBox, Empty
     },
     methods: {
-        showChat: function(id) {
-            this.chatId = id;
+        showChat: function(chat) {
+            this.currentChat = chat;
         }
     }
 }

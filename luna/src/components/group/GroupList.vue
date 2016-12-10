@@ -16,7 +16,7 @@ export default {
     name: 'GroupList',
     methods: {
         showGroupInfo: function() {
-            
+
         }
     }
 }
@@ -31,6 +31,12 @@ export default {
 }
 
 .grouplist {
+    position: absolute;
+    width: 280px;
+    height: 100%;
+    background-color: #E8EBEF;
+    border-right: 1px solid #D1D4D8;
+    z-index: 1;
     min-height: 100%;
     margin: 0;
     padding: 0;

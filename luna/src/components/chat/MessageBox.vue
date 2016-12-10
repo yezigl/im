@@ -2,24 +2,24 @@
     <div class="messagebox">
         <div class="title-wrapper head-wrapper">
             <div class="title">
-                <span>{{personInfo.name}}</span>
+                <span>{{currentChat.name}}</span>
             </div>
             <div class="profile" v-bind:class="{ 'show-sidebar': showSidebar }">
-                <span class="fa fa-user" v-on:click="toggleSidebar"></span>
+                <span class="iconfont icon-yonghu" v-on:click="toggleSidebar"></span>
                 <span class="arrow-top"></span>
             </div>
         </div>
         <div class="message-list-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
-            <div class="message-list-inner">
-                <MessageList></messageList>
+            <div class="message-list-box">
+                <MessageList></MessageList>
             </div>
             <div class="sendbox">
                 <div class="tool-wrapper">
                     <span class="emoji">
-                        <i class="fa fa-smile-o" @click="showEmoji"></i>
+                        <i class="iconfont icon-xiaolian" @click="showEmoji"></i>
                     </span>
                     <span class="fileupload">
-                        <i class="fa fa-file-o" @click="uploadFile"></i>
+                        <i class="iconfont icon-fasongwenjian" @click="uploadFile"></i>
                         <input type="file" id="uploadFile" @change="onAddFile" style="display: none">
                     </span>
                 </div>
@@ -34,7 +34,8 @@
                 </div>
             </div>
             <div v-if="showSidebar" class="sidebar">
-                <ProfileBar></ProfileBar>
+                <ProfileBar v-if="currentChat.type == 'chat'"></ProfileBar>
+                <GroupBar v-if="currentChat.type == 'groupchat'"></GroupBar>
             </div>
         </div>
     </div>
@@ -47,6 +48,7 @@ import MessageList from './MessageList'
 
 export default {
     name: 'MessageBox',
+    props: ['currentChat'],
     components : {
         ProfileBar, GroupBar, MessageList
     },
@@ -124,7 +126,7 @@ export default {
     border-top: 1px solid #D1D4D8;
 }
 
-.show-sidebar .arrow-top {
+.title-wrapper .show-sidebar .arrow-top {
     display: block;
 }
 
@@ -136,7 +138,7 @@ export default {
     bottom: 0;
 }
 
-.message-list-inner {
+.message-list-box {
     overflow: auto;
     position: absolute;
     top: 0;
@@ -146,7 +148,7 @@ export default {
     padding: 0;
 }
 
-.show-sidebar .message-list-inner, .show-sidebar .sendbox {
+.show-sidebar .message-list-box, .show-sidebar .sendbox {
     right: 240px;
 }
 
@@ -159,32 +161,32 @@ export default {
     border-top: 1px solid #D1D4D8;
 }
 
-.tool-wrapper {
+.sendbox .tool-wrapper {
     height: 30px;
     line-height: 30px;
 }
 
-.tool-wrapper i {
+.sendbox .tool-wrapper i {
     color: #ccc;
     cursor: pointer;
 }
 
-.tool-wrapper .emoji {
+.sendbox .tool-wrapper .emoji {
     margin-left: 20px;
     font-size: 22px;
 }
 
-.tool-wrapper .fileupload {
+.sendbox .tool-wrapper .fileupload {
     margin-left: 6px;
     font-size: 20px;
 }
 
-.input-wrapper {
+.sendbox .input-wrapper {
     width: 100%;
     height: 66px;
 }
 
-.input-wrapper textarea {
+.sendbox .input-wrapper textarea {
     width: 100%;
     height: 100%;
     overflow: auto;
@@ -198,11 +200,11 @@ export default {
     outline: 0;
 }
 
-.send-wrapper {
+.sendbox .send-wrapper {
     text-align: right;
 }
 
-.send-wrapper .send-button {
+.sendbox .send-wrapper .send-button {
     margin: 0 20px 0 0;
     width: 54px;
     height: 30px;
@@ -256,7 +258,7 @@ export default {
 }
 
 .sidebar {
-    width: 240px;
+    width: 241px;
     transition: .1s .1s;
     display: block;
     border-left: 1px solid rgba(0,0,0,.1);
