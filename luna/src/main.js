@@ -6,6 +6,7 @@ import App from './App'
 import ChatBox from './components/chat/ChatBox'
 import GroupBox from './components/group/GroupBox'
 
+import MessageManager from './sdk/MessageManager'
 
 /* eslint-disable no-new */
 const router = new VueRouter({

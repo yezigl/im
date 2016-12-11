@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import IMSDK from '../../IMSDK'
+import IMSDK from '../../sdk/IMSDK'
 
 export default {
     name: 'ChatList',
