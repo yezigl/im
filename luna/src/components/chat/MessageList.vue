@@ -98,6 +98,7 @@ AND c.begintime > UNIX_TIMESTAMP('2016-10-19 00:00:00');`,
 
 .message-list {
     width: 100%;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 }

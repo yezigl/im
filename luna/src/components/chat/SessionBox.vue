@@ -1,51 +1,54 @@
 <template>
     <div>
-        <div class="chatbox-wrapper">
-            <div class="chatbox">
+        <div class="sessionbox-wrapper">
+            <div class="sessionbox">
                 <SearchBox></SearchBox>
-                <ChatList @showChat="showChat"></ChatList>
+                <SessionList @showSession="showSession"></SessionList>
             </div>
         </div>
         <div class="messagebox-wrapper">
-            <Empty v-if="currentChat.id == 0"></Empty>
-            <MessageBox v-else v-bind:currentChat="currentChat"></MessageBox>
+            <Empty v-if="curSession.id == 0"></Empty>
+            <MessageBox class="messagebox" v-else v-bind:curSession="curSession"></MessageBox>
         </div>
     </div>
 </template>
 
 <script>
 import SearchBox from './SearchBox'
-import ChatList from './ChatList'
+import SessionList from './SessionList'
 import MessageBox from './MessageBox'
 import Empty from '../common/Empty'
 
 export default {
     data: function() {
         return {
-            currentChat: {
+            curSession: {
                 id: 0
             }
         };
     },
     components: {
-        SearchBox, ChatList, MessageBox, Empty
+        SearchBox, SessionList, MessageBox, Empty
     },
     methods: {
-        showChat: function(chat) {
-            this.currentChat = chat;
+        showSession: function(session) {
+            this.curSession = session;
+            console.log(session.id)
+            var div = document.getElementById('messageListBox');
+            div.scrollTop = div.scrollHeight;
         }
     }
 }
 </script>
 
 <style scoped>
-.chatbox-wrapper {
+.sessionbox-wrapper {
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
-.chatbox {
+.sessionbox {
     position: absolute;
     width: 280px;
     height: 100%;
@@ -59,5 +62,14 @@ export default {
     width: 100%;
     height: 100%;
     background-color: #E8EBEF;
+}
+
+.messagebox {
+    position: absolute;
+    left: 280px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #F3F5F7;
 }
 </style>

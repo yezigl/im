@@ -1,24 +1,24 @@
 <template>
-    <div class="chatlist-wrapper">
-        <ul class="chatlist">
-            <li class="chat" v-for="(chat, index) in chatList" @click="showChat(chat, index)" v-bind:class="{'selected': chatId == chat.id}">
+    <div class="session-list-wrapper">
+        <ul class="session-list">
+            <li class="session" v-for="(session, index) in sessionList" @click="showSession(session, index)" v-bind:class="{'selected': sessionId == session.id}">
                 <div class="avatar">
-                    <img class="large-avatar round-avatar" :src="chat.avatar">
+                    <img class="large-avatar round-avatar" :src="session.avatar">
                 </div>
-                <div class="chat-badge" v-bind:class="{'hide': chat.unread == 0}">
-                    <span class="badge-num">{{chat.unread}}</span>
+                <div class="session-badge" v-bind:class="{'hide': session.unread == 0}">
+                    <span class="badge-num">{{session.unread}}</span>
                 </div>
                 <div class="name">
                     <span class="content">
-                        <span>{{chat.name}}</span>
+                        <span>{{session.name}}</span>
                         <span>&nbsp;&nbsp;</span>
                     </span>
                 </div>
                 <div class="desc">
-                    <span v-if="chat.type == Session.GROUPCHAT">{{chat.lastName}}：</span>
-                    <span>{{chat.lastContent}}</span>
+                    <span v-if="session.type == SessionType.GROUPCHAT">{{session.lastName}}：</span>
+                    <span>{{session.lastContent}}</span>
                 </div>
-                <span class="time">{{chat.time}}</span>
+                <span class="time">{{session.time}}</span>
             </li>
         </ul>
     </div>
@@ -28,30 +28,30 @@
 import IMSDK from '../../sdk/IMSDK'
 
 export default {
-    name: 'ChatList',
+    name: 'SessionList',
     data: function() {
         return {
-            chatList: [],
-            chatId: 0,
-            Session: IMSDK.data.Session
+            sessionList: [],
+            sessionId: 0,
+            SessionType: IMSDK.data.SessionType
         };
     },
     methods: {
-        showChat: function(chat, index) {
-            if (!chat) {
+        showSession: function(session, index) {
+            if (!session) {
                 location.href = '/#/';
                 return;
             }
-            this.chatId = chat.id;
+            this.sessionId = session.id;
             if (index !== undefined) {
-                chat.unread = 0;
+                session.unread = 0;
             }
-            location.href = '/#/chat/' + chat.id;
-            this.$emit('showChat', chat);
+            location.href = '/#/chat/' + session.id;
+            this.$emit('showSession', session);
         }
     },
     mounted: function() {
-        this.chatList = [
+        this.sessionList = [
             {
                 id: 1000,
                 avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile4/99287bb1-8aea-47c6-b628-eaa5d3d496d5',
@@ -74,34 +74,34 @@ export default {
         ];
         var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
         if (match) {
-            var filterd = this.chatList.filter(e => e.id == match[2]);
-            this.showChat(filterd.length == 0 ? null : filterd[0]);
+            var filterd = this.sessionList.filter(e => e.id == match[2]);
+            this.showSession(filterd.length == 0 ? null : filterd[0]);
         } else {
-            this.showChat(null);
+            this.showSession(null);
         }
     }
 }
 </script>
 
 <style scoped>
-.chatlist-wrapper {
+.session-list-wrapper {
     width: 100%;
     top: 70px;
     bottom: 0;
     position: absolute;
 }
 
-.chatlist {
+.session-list {
     min-height: 100%;
     margin: 0;
     padding: 0;
 }
 
-.chatlist li {
+.session-list li {
     list-style: none;
 }
 
-.chat {
+.session {
     display: block;
     height: 70px;
     padding: 15px 20px;
@@ -109,20 +109,20 @@ export default {
     cursor: pointer;
 }
 
-.chat.selected, .chat.selected:HOVER {
+.session.selected, .session.selected:HOVER {
     background-color: #C5DCF1;
 }
 
-.chat:HOVER {
+.session:HOVER {
     background-color: #DBE7F1;
 }
 
-.chat .avatar {
+.session .avatar {
     float: left;
     margin-right: 12px;
 }
 
-.chat .name {
+.session .name {
     line-height: 18px;
     height: 18px;
     max-width: 90%;
@@ -130,7 +130,7 @@ export default {
     margin-top: 1px;
 }
 
-.chat .name .content {
+.session .name .content {
     max-width: 76%;
     display: inline-block;
     overflow: hidden;
@@ -138,7 +138,7 @@ export default {
     white-space: nowrap;
 }
 
-.chat .desc {
+.session .desc {
     font-size: 12px;
     color: rgba(0, 0, 0, .54);
     min-width: 54%;
@@ -150,7 +150,7 @@ export default {
     line-height: 18px;
 }
 
-.chat .time {
+.session .time {
     position: absolute;
     right: 20px;
     color: rgba(0, 0, 0, .38);
@@ -159,7 +159,7 @@ export default {
     line-height: 18px;
 }
 
-.chat .chat-badge {
+.session .session-badge {
     position: absolute;;
     min-width: 10px;
     width: 18px;

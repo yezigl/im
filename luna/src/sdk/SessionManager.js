@@ -1,10 +1,10 @@
 export default {
     name: 'SessionManager',
-    Session: {
+    SessionType: {
         CHAT: 'chat',
         GROUPCHAT: 'groupchat'
     },
-    heartBeat: function() {
+    getSessionList: function() {
 
     }
 }

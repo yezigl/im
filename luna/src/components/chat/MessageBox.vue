@@ -1,8 +1,8 @@
 <template>
-    <div class="messagebox">
+    <div>
         <div class="title-wrapper head-wrapper">
             <div class="title">
-                <span>{{currentChat.name}}</span>
+                <span>{{curSession.name}}</span>
             </div>
             <div class="profile" v-bind:class="{ 'show-sidebar': showSidebar }">
                 <span class="iconfont icon-yonghu" v-on:click="toggleSidebar"></span>
@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="message-list-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
-            <div class="message-list-box">
+            <div class="message-list-box" id="messageListBox">
                 <MessageList></MessageList>
             </div>
             <div class="sendbox">
@@ -34,8 +34,8 @@
                 </div>
             </div>
             <div v-if="showSidebar" class="sidebar">
-                <ProfileBar v-if="currentChat.type == 'chat'"></ProfileBar>
-                <GroupBar v-if="currentChat.type == 'groupchat'"></GroupBar>
+                <ProfileBar v-if="curSession.type == 'chat'"></ProfileBar>
+                <GroupBar v-if="curSession.type == 'groupchat'"></GroupBar>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@ import MessageList from './MessageList'
 
 export default {
     name: 'MessageBox',
-    props: ['currentChat'],
+    props: ['curSession'],
     components : {
         ProfileBar, GroupBar, MessageList
     },
@@ -81,20 +81,13 @@ export default {
         sendMessage: function() {
             alert("to be continue");
         }
+    },
+    mounted: function() {
     }
 }
 </script>
 
 <style scoped>
-.messagebox {
-    position: absolute;
-    left: 280px;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: #F3F5F7;
-}
-
 .title-wrapper {
     width: 100%;
     height: 70px;

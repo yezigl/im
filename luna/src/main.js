@@ -3,21 +3,22 @@ import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 
 import App from './App'
-import ChatBox from './components/chat/ChatBox'
+import SessionBox from './components/chat/SessionBox'
 import GroupBox from './components/group/GroupBox'
 
 import MessageManager from './sdk/MessageManager'
+import IMSDK from './sdk/IMSDK'
 
 /* eslint-disable no-new */
 const router = new VueRouter({
     routes: [
         {
             path: '/',
-            component: ChatBox
+            component: SessionBox
         },
         {
             path: '/chat/:uid?',
-            component: ChatBox
+            component: SessionBox
         },
         {
             path: '/group/:gid?',
@@ -33,3 +34,4 @@ new Vue({
     components: { App },
     router: router
 })
+IMSDK.start();

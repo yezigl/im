@@ -1,19 +1,22 @@
+import SessionManager from './SessionManager'
+
 export default {
     name: 'IMSDK',
     data: {
-        Session: {
-            CHAT: 'chat',
-            GROUPCHAT: 'groupchat'
-        },
-        Message: {
-            TYPE_TEXT: 'text',
-            TYPE_IMAGE: 'image'
-        }
+        SessionType: SessionManager.SessionType
     },
-    SessionManager: function() {
+    start: function() {
+        var source = new EventSource('/sse/event/' + 1);
+
+        source.onmessage = function(e) {
+          console.log(e.data);
+        };
+        source.onerror = function(e) {
+            console.log(e)
+        }
 
     },
-    MessageManager: function() {
-        
+    heartBeat: function() {
+
     }
 }
