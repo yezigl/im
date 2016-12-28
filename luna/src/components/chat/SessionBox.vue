@@ -33,9 +33,10 @@ export default {
     methods: {
         showSession: function(session) {
             this.curSession = session;
-            console.log(session.id)
-            var div = document.getElementById('messageListBox');
-            div.scrollTop = div.scrollHeight;
+            setTimeout(function() {
+                var div = document.getElementById('messageListBox');
+                div.scrollTop = div.scrollHeight;
+            }, 100);
         }
     }
 }

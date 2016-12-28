@@ -1,9 +1,5 @@
 export default {
     name: 'MessageManager',
-    MessageType: {
-        TYPE_TEXT: 'text',
-        TYPE_IMAGE: 'image'
-    },
     getChatMessageList: function(toUid) {
 
     },

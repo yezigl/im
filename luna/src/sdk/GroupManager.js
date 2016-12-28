@@ -1,9 +1,5 @@
 export default {
     name: 'GroupManager',
-    Session: {
-        CHAT: 'chat',
-        GROUPCHAT: 'groupchat'
-    },
     createGroup: function(uids) {
 
     },

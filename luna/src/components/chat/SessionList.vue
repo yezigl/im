@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import IMSDK from '../../sdk/IMSDK'
+import Config from '../../sdk/Config'
 
 export default {
     name: 'SessionList',
@@ -33,7 +33,7 @@ export default {
         return {
             sessionList: [],
             sessionId: 0,
-            SessionType: IMSDK.data.SessionType
+            SessionType: Config.SessionType
         };
     },
     methods: {
@@ -46,7 +46,7 @@ export default {
             if (index !== undefined) {
                 session.unread = 0;
             }
-            location.href = '/#/chat/' + session.id;
+            location.href = '/#/' + session.type + '/' + session.id;
             this.$emit('showSession', session);
         }
     },

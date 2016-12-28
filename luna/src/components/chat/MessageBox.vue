@@ -206,40 +206,6 @@ export default {
     display: inline-block;
 }
 
-.button {
-    display: inline-block;
-    margin-bottom: 0;
-    font-weight: 400;
-    text-align: center;
-    vertical-align: middle;
-    touch-action: manipulation;
-    cursor: pointer;
-    background-image: none;
-    border: 1px solid transparent;
-    white-space: nowrap;
-    line-height: 1.5;
-    padding: 8px 31px;
-    font-size: 14px;
-    border-radius: 4px;
-    user-select: none;
-    transition: all .3s cubic-bezier(.645,.045,.355,1);
-    transform: translateZ(0);
-    color: rgba(0,0,0,.87);
-    background-color: #f8f8f8;
-    border-color: rgba(0,0,0,.1);
-}
-
-.button-primary {
-    color: #fff;
-    background-color: #118bfb;
-    border-color: #118bfb;
-}
-
-.button-sm {
-    padding: 1px 7px;
-    border-radius: 4px;
-}
-
 .send-tip {
     display: inline-block;;
     text-align: right;
