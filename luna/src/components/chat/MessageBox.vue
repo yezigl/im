@@ -9,29 +9,12 @@
                 <span class="arrow-top"></span>
             </div>
         </div>
-        <div class="message-list-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
-            <div class="message-list-box" id="messageListBox">
-                <MessageList></MessageList>
+        <div class="message-box-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
+            <div class="message-list-wrapper" id="messageListBox">
+                <MessageList :messageList="messageList"></MessageList>
             </div>
-            <div class="sendbox">
-                <div class="tool-wrapper">
-                    <span class="emoji">
-                        <i class="iconfont icon-xiaolian" @click="showEmoji"></i>
-                    </span>
-                    <span class="fileupload">
-                        <i class="iconfont icon-fasongwenjian" @click="uploadFile"></i>
-                        <input type="file" id="uploadFile" @change="onAddFile" style="display: none">
-                    </span>
-                </div>
-                <div class="input-wrapper">
-                    <textarea id="inputText" name="inputText" v-model="inputText" placeholder="说点什么……"></textarea>
-                </div>
-                <div class="send-wrapper">
-                    <div>
-                        <span class="send-tip">Shift + Enter 换行, Enter 发送</span>
-                        <button type="button" @click="sendMessage" class="send-button button button-primary button-sm">发&nbsp;送</button>
-                    </div>
-                </div>
+            <div class="sendbox-wrapper">
+                <SendBox @sendMessage="sendMessage"></SendBox>
             </div>
             <div v-if="showSidebar" class="sidebar">
                 <ProfileBar v-if="curSession.type == 'chat'"></ProfileBar>
@@ -45,44 +28,83 @@
 import ProfileBar from './ProfileBar'
 import GroupBar from './GroupBar'
 import MessageList from './MessageList'
+import SendBox from './SendBox'
 
 export default {
     name: 'MessageBox',
     props: ['curSession'],
     components : {
-        ProfileBar, GroupBar, MessageList
+        ProfileBar, GroupBar, MessageList, SendBox
     },
     data: function() {
         return {
             showSidebar: true,
-            inputText: '',
-            imageRegExp: /(gif|jpeg|jpg|png|bmp)$/,
-            personInfo: {}
+            messageList: [],
+            offset: 0,
+            limit: 10
         };
     },
     methods: {
         toggleSidebar: function() {
             this.showSidebar = !this.showSidebar;
         },
-        showEmoji: function() {
+        sendMessage: function(message) {
             alert("to be continue");
-        },
-        uploadFile: function() {
-            document.getElementById('uploadFile').click();
-        },
-        onAddFile: function(event) {
-            var fileName = event.target.files[0].name;
-            if (this.imageRegExp.test(fileName)) {
-                alert("send image")
-            } else {
-                alert("send normal file")
-            }
-        },
-        sendMessage: function() {
-            alert("to be continue");
+            this.$http.post(config.apiService + '/api/v1/messages', message).then(suc => {
+                var response = suc.data;
+                if (response.code == 200 && response.data) {
+                    this.messageList.push(response.data);
+                }
+            }, error => {
+
+            });
         }
     },
-    mounted: function() {
+    created: function() {
+        this.$http.get(config.apiServer + '/api/v1/messages/' + this.curSession.type, {
+            params: {offset: this.offset, limit: this.limit}
+        }).then(suc => {
+            var response = suc.data;
+            if (response.code == 200 && response.data) {
+                this.messageList = response.data.reverse().concat(his.messageList.concat);
+            }
+        });
+        this.messageList = [
+            {
+                id: 12,
+                uid: 2,
+                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
+                nickname: '张三',
+                content: '没细看日志，之前是有这个的',
+                type: 'text'
+            }, {
+                id: 13,
+                uid: 1,
+                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
+                nickname: '张三',
+                content: '没细看日志，之前是有这个的',
+                type: 'text'
+            },
+            {
+                id: 12,
+                uid: 2,
+                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
+                nickname: '张三',
+                content: `SELECT b.dealid
+from origindb.wwwdeal__dealbizacct as b
+JOIN origindb.wwwdeal__deal as c
+on b.dealid = c.id
+WHERE b.bizacctid in (
+  SELECT DISTINCT(a.bizacctid)
+  FROM origindb.meituanverify_meituanverify__allverifylog as a
+  WHERE a.id >= 7431016249
+  AND a.bizacctid % 100 in (80, 81, 82, 83, 84)
+  AND a.verifytype in (80, 9, 101)
+)
+AND c.begintime > UNIX_TIMESTAMP('2016-10-19 00:00:00');`,
+                type: 'text'
+            }
+        ];
     }
 }
 </script>
@@ -123,7 +145,7 @@ export default {
     display: block;
 }
 
-.message-list-wrapper {
+.message-box-wrapper {
     position: absolute;
     width: 100%;
     color: rgba(0,0,0,.87);
@@ -131,7 +153,7 @@ export default {
     bottom: 0;
 }
 
-.message-list-box {
+.message-list-wrapper {
     overflow: auto;
     position: absolute;
     top: 0;
@@ -141,79 +163,17 @@ export default {
     padding: 0;
 }
 
-.show-sidebar .message-list-box, .show-sidebar .sendbox {
+.show-sidebar .message-list-wrapper, .show-sidebar .sendbox-wrapper {
     right: 240px;
 }
 
-.sendbox {
+.sendbox-wrapper {
     height: 140px;
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     border-top: 1px solid #D1D4D8;
-}
-
-.sendbox .tool-wrapper {
-    height: 30px;
-    line-height: 30px;
-}
-
-.sendbox .tool-wrapper i {
-    color: #ccc;
-    cursor: pointer;
-}
-
-.sendbox .tool-wrapper .emoji {
-    margin-left: 20px;
-    font-size: 22px;
-}
-
-.sendbox .tool-wrapper .fileupload {
-    margin-left: 6px;
-    font-size: 20px;
-}
-
-.sendbox .input-wrapper {
-    width: 100%;
-    height: 66px;
-}
-
-.sendbox .input-wrapper textarea {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-repeat: no-repeat;
-    border: 0;
-    box-sizing: border-box;
-    padding: 10px 20px;
-    line-height: 20px;
-    background-color: transparent;
-    resize: none;
-    outline: 0;
-}
-
-.sendbox .send-wrapper {
-    text-align: right;
-}
-
-.sendbox .send-wrapper .send-button {
-    margin: 0 20px 0 0;
-    width: 54px;
-    height: 30px;
-    text-align: center;
-    font-size: 12px;
-    display: inline-block;
-}
-
-.send-tip {
-    display: inline-block;;
-    text-align: right;
-    margin: 0 10px 0 0;
-    line-height: 30px;
-    height: 30px;
-    font-size: 12px;
-    color: rgba(0,0,0,.38);
 }
 
 .sidebar {

@@ -1,10 +1,12 @@
-export default {
-    MessageType: {
-        TYPE_TEXT: 'text',
-        TYPE_IMAGE: 'image'
-    },
-    SessionType: {
-        CHAT: 'chat',
-        GROUPCHAT: 'groupchat'
-    }
+
+export const MessageType = {
+    TEXT: 'text',
+    IMAGE: 'image',
+    FILE: 'file',
+    EMOJI: 'emoji'
+};
+
+export const SessionType= {
+    CHAT: 'chat',
+    GROUPCHAT: 'groupchat'
 }

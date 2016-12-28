@@ -1,7 +1,7 @@
 <template>
     <div class="session-list-wrapper">
         <ul class="session-list">
-            <li class="session" v-for="(session, index) in sessionList" @click="showSession(session, index)" v-bind:class="{'selected': sessionId == session.id}">
+            <li class="session" v-for="(session, index) in sessionList" @click="showSession(session, index)" v-bind:class="{'selected': curSession.id == session.id}">
                 <div class="avatar">
                     <img class="large-avatar round-avatar" :src="session.avatar">
                 </div>
@@ -25,59 +25,19 @@
 </template>
 
 <script>
-import Config from '../../sdk/Config'
+import {SessionType} from '../../sdk/Config'
 
 export default {
     name: 'SessionList',
+    props: ['sessionList', 'curSession'],
     data: function() {
         return {
-            sessionList: [],
-            sessionId: 0,
-            SessionType: Config.SessionType
+            SessionType: SessionType
         };
     },
     methods: {
         showSession: function(session, index) {
-            if (!session) {
-                location.href = '/#/';
-                return;
-            }
-            this.sessionId = session.id;
-            if (index !== undefined) {
-                session.unread = 0;
-            }
-            location.href = '/#/' + session.type + '/' + session.id;
-            this.$emit('showSession', session);
-        }
-    },
-    mounted: function() {
-        this.sessionList = [
-            {
-                id: 1000,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile4/99287bb1-8aea-47c6-b628-eaa5d3d496d5',
-                unread: 99,
-                name: '张三、李四、王五',
-                lastName: '张三',
-                lastContent: '没事 这个不影响发布',
-                time: '昨天',
-                type: 'groupchat'
-            }, {
-                id: 1001,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile9/1129f264-bdab-43be-a481-23fd69020aaa',
-                unread: 0,
-                name: '张三',
-                lastName: '张三',
-                lastContent: '没事 这个不影响发布',
-                time: '16/9/21',
-                type: 'chat'
-            }
-        ];
-        var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
-        if (match) {
-            var filterd = this.sessionList.filter(e => e.id == match[2]);
-            this.showSession(filterd.length == 0 ? null : filterd[0]);
-        } else {
-            this.showSession(null);
+            this.$emit('showSession', session, index);
         }
     }
 }

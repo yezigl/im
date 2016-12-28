@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="message-list-box">
         <div>
             <div class="loading-wrapper loaded">没有更多数据了</div>
         </div>
@@ -31,55 +31,17 @@
 <script>
 export default {
     name: 'MessageList',
+    props: ['messageList'],
     components : {
 
     },
     data: function() {
         return {
-            meUid: 1,
-            messageList: []
+            meUid: config.uid
         };
     },
     methods: {
 
-    },
-    mounted: function() {
-        this.messageList = [
-            {
-                id: 12,
-                uid: 2,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                nickname: '张三',
-                content: '没细看日志，之前是有这个的',
-                type: 'text'
-            }, {
-                id: 13,
-                uid: 1,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                nickname: '张三',
-                content: '没细看日志，之前是有这个的',
-                type: 'text'
-            },
-            {
-                id: 12,
-                uid: 2,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                nickname: '张三',
-                content: `SELECT b.dealid
-from origindb.wwwdeal__dealbizacct as b
-JOIN origindb.wwwdeal__deal as c
-on b.dealid = c.id
-WHERE b.bizacctid in (
-  SELECT DISTINCT(a.bizacctid)
-  FROM origindb.meituanverify_meituanverify__allverifylog as a
-  WHERE a.id >= 7431016249
-  AND a.bizacctid % 100 in (80, 81, 82, 83, 84)
-  AND a.verifytype in (80, 9, 101)
-)
-AND c.begintime > UNIX_TIMESTAMP('2016-10-19 00:00:00');`,
-                type: 'text'
-            }
-        ];
     }
 }
 </script>

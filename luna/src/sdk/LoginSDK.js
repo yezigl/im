@@ -4,6 +4,7 @@ export default {
 
     },
     login: function() {
+        return true;
         var cookie = this.parseCookie();
         if (!cookie.uid || !cookie.tk) {
             location.href = 'http://x.focus.cn/login';
