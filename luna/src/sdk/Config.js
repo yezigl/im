@@ -1,12 +1,12 @@
 
 export const MessageType = {
-    TEXT: 'text',
-    IMAGE: 'image',
-    FILE: 'file',
-    EMOJI: 'emoji'
+    TEXT: 'TEXT',
+    IMAGE: 'IMAGE',
+    FILE: 'FILE',
+    EMOJI: 'EMOJI'
 };
 
 export const SessionType= {
-    CHAT: 'chat',
-    GROUPCHAT: 'groupchat'
+    CHAT: 'CHAT',
+    GROUPCHAT: 'GROUPCHAT'
 }

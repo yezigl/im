@@ -1,7 +1,7 @@
 <template>
     <div id="toolbar">
         <div class="userinfo" :title="userInfo.name">
-            <img class="large-avatar round-avatar" :src="userInfo.avatar" />
+            <img class="large-avatar round-avatar" :src="userInfo.avatar" @click="showProfile" />
         </div>
         <div class="tool">
             <div class="app-item" title="消息" v-bind:class="{ 'active': type == 'chat' }">
@@ -39,14 +39,20 @@ export default {
     methods: {
         changeToolbar: function(type) {
             this.type = type;
+        },
+        showProfile: function() {
+            alert('to be continued')
         }
     },
     mounted: function() {
-        this.userInfo = {
-            id: 1000,
-            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-            name: '李四'
-        }
+        this.$http.get(config.apiServer + '/api/v1/rosters/' + config.uid).then(suc => {
+            var response = suc.data;
+            if (response.code == 200 && response.data) {
+                this.userInfo = response.data;
+            }
+        }, error => {
+
+        });
     }
 }
 </script>

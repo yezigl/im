@@ -4,10 +4,9 @@ export default {
 
     },
     login: function() {
-        return true;
         var cookie = this.parseCookie();
         if (!cookie.uid || !cookie.tk) {
-            location.href = 'http://x.focus.cn/login';
+            location.href = config.apiServer + '/login';
             return false;
         }
         window.config.uid = cookie.uid;
@@ -15,7 +14,7 @@ export default {
         return true;
     },
     logout: function() {
-        location.href = 'http://x.focus.cn/logout';
+        location.href = config.apiServer + '/logout';
     },
     parseCookie: function() {
         var cookies = document.cookie.split(';');
@@ -23,9 +22,10 @@ export default {
         for (var cookie of cookies) {
             var kv = cookie.trim().split('=');
             if (kv[0] == 'im_uid') {
-                uid = kv[1];
+                var us = kv[1].split('|');
+                uid = us[0];
             }
-            if (kv[0] == 'tk') {
+            if (kv[0] == 'im_tk') {
                 tk = kv[1];
             }
         }

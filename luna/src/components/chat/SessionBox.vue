@@ -7,7 +7,7 @@
             </div>
         </div>
         <div class="messagebox-wrapper">
-            <MessageBox class="messagebox" v-if="curSession.id" :curSession="curSession"></MessageBox>
+            <MessageBox class="messagebox" v-if="curSession.id" @showLastest="showLastest" :curSession="curSession"></MessageBox>
             <Empty v-else></Empty>
         </div>
     </div>
@@ -23,7 +23,9 @@ export default {
     data: function() {
         return {
             curSession: {},
-            sessionList: []
+            sessionList: [],
+            offset: 0,
+            limit: 10
         };
     },
     components: {
@@ -31,6 +33,7 @@ export default {
     },
     methods: {
         showSession: function(session, index) {
+            console.log(session);
             if (!session) {
                 location.href = '/#/';
                 return;
@@ -40,13 +43,31 @@ export default {
             }
             this.curSession = session;
             location.href = '/#/' + session.type + '/' + session.id;
+            this.showLastest();
+        },
+        showLastest: function() {
             setTimeout(function() {
                 var div = document.getElementById('messageListBox');
                 div.scrollTop = div.scrollHeight;
             }, 100);
         }
     },
-    created: function() {
+    mounted: function() {
+        this.$http.get(config.apiServer + '/api/v1/sessions', {
+            params: {offset: this.offset, limit: this.limit}
+        }, suc => {
+            var response = suc.data;
+            if (response.code == 200 && response.data) {
+                this.sessionList = response.data;
+                var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
+                if (match) {
+                    var filterd = this.sessionList.filter(e => e.id == match[2]);
+                    this.showSession(filterd.length == 0 ? null : filterd[0]);
+                } else {
+                    this.showSession(null);
+                }
+            }
+        });
         this.sessionList = [
             {
                 id: 1000,
@@ -68,13 +89,6 @@ export default {
                 type: 'chat'
             }
         ];
-        var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
-        if (match) {
-            var filterd = this.sessionList.filter(e => e.id == match[2]);
-            this.showSession(filterd.length == 0 ? null : filterd[0]);
-        } else {
-            this.showSession(null);
-        }
     }
 }
 </script>

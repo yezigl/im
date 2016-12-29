@@ -45,7 +45,8 @@ window.config = {
     apiServer: 'http://x.focus.cn',
     uid: 0,
     tk: '',
-    time: ''
+    time: '',
+    bus: new Vue()
 }
 if (LoginSDK.login()) {
     Vue.use(VueRouter).use(VueResource);
@@ -54,8 +55,8 @@ if (LoginSDK.login()) {
         template: '<App/>',
         components: { App },
         router: router
-    })
+    });
 
     var imsdk = new IMSDK(vue);
-    imsdk.ntp();
+    setTimeout(() => {imsdk.ntp()}, 1000);
 }

@@ -12,20 +12,32 @@
                     <div class="desc-label">个性签名</div>
                     <div class="desc">{{rosterInfo.desc}}</div>
                 </div>
-                <button class="chat-button button button-primary" @click="makeChat(rosterInfo)">发起聊天</button>
+                <button class="chat-button button button-primary" v-if="rosterInfo.uid != me" @click="makeChat(rosterInfo)">发起聊天</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import {SessionType} from '../../sdk/Config'
+
 export default {
     name: 'RosterInfo',
     props: ['rosterInfo'],
+    data: function() {
+        return {
+            me: config.uid
+        };
+    },
     methods: {
         makeChat: function(roster) {
-            console.log(roster.uid)
-            location.href = '/#/chat/' + roster.uid;
+            console.log('create chat with ' + roster.uid);
+            this.$http.post(config.apiServer + '/api/v1/sessions', {
+                toId: roster.uid,
+                type: SessionType.CHAT
+            }, suc => {
+                location.href = '/#/' + SessionType.CHAT.toLowerCase() + '/' + roster.uid;
+            })
         }
     }
 }

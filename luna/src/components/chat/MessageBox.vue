@@ -11,7 +11,7 @@
         </div>
         <div class="message-box-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
             <div class="message-list-wrapper" id="messageListBox">
-                <MessageList :messageList="messageList"></MessageList>
+                <MessageList :messageList="messageList" :trigger="trigger"></MessageList>
             </div>
             <div class="sendbox-wrapper">
                 <SendBox @sendMessage="sendMessage"></SendBox>
@@ -29,6 +29,7 @@ import ProfileBar from './ProfileBar'
 import GroupBar from './GroupBar'
 import MessageList from './MessageList'
 import SendBox from './SendBox'
+import {SessionType} from '../../sdk/Config'
 
 export default {
     name: 'MessageBox',
@@ -39,9 +40,8 @@ export default {
     data: function() {
         return {
             showSidebar: true,
-            messageList: [],
-            offset: 0,
-            limit: 10
+            messageWrapper: {},
+            messageList: []
         };
     },
     methods: {
@@ -58,53 +58,86 @@ export default {
             }, error => {
 
             });
+        },
+        fetchMessages: function(offset, limit, callback) {
+            var params = {'offset': offset, 'limit': limit};
+            if (this.curSession.type == SessionType.CHAT) {
+                params['toUid'] = this.curSession.id;
+            } else if (this.curSession.type == SessionType.GROUPCHAT) {
+                params['gid'] = this.curSession.id;
+            }
+            this.$http.get(config.apiServer + '/api/v1/messages/' + this.curSession.type, {
+                'params': params
+            }).then(suc => {
+                var response = suc.data;
+                if (response.code == 200 && response.data) {
+                    callback(response.data);
+                }
+            });
+        },
+        setMessageList: function(messageList) {
+            this.messageList = messageList
+            this.$emit('showLastest');
+        }
+    },
+    computed: {
+        trigger: function() {
+            var wrapper = this.messageWrapper[this.curSession.id];
+            var _this = this;
+            if (!wrapper) {
+                wrapper = {offset: 0, limit: 10, messageList: []};
+                this.fetchMessages(wrapper.offset, wrapper.limit, function(mlist) {
+                    wrapper.messageList = mlist.reverse().concat(wrapper.messageList);
+                    _this.setMessageList(wrapper.messageList);
+                });
+                this.messageWrapper[this.curSession.id] = wrapper;
+                setTimeout(function() {
+                    wrapper.messageList = [
+                        {
+                            id: 12,
+                            uid: 2,
+                            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
+                            nickname: '张三',
+                            content: '没细看日志，之前是有这个的',
+                            type: 'text'
+                        }, {
+                            id: 13,
+                            uid: 1,
+                            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
+                            nickname: '张三',
+                            content: '没细看日志，之前是有这个的',
+                            type: 'text'
+                        },
+                        {
+                            id: 12,
+                            uid: 2,
+                            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
+                            nickname: '张三',
+                            content: `SELECT b.dealid
+            from origindb.wwwdeal__dealbizacct as b
+            JOIN origindb.wwwdeal__deal as c
+            on b.dealid = c.id
+            WHERE b.bizacctid in (
+              SELECT DISTINCT(a.bizacctid)
+              FROM origindb.meituanverify_meituanverify__allverifylog as a
+              WHERE a.id >= 7431016249
+              AND a.bizacctid % 100 in (80, 81, 82, 83, 84)
+              AND a.verifytype in (80, 9, 101)
+            )
+            AND c.begintime > UNIX_TIMESTAMP('2016-10-19 00:00:00');`,
+                            type: 'text'
+                        }
+                    ];
+                    _this.setMessageList(wrapper.messageList);
+                }, 100)
+            } else {
+                _this.setMessageList(wrapper.messageList);
+            }
+            return wrapper;
         }
     },
     created: function() {
-        this.$http.get(config.apiServer + '/api/v1/messages/' + this.curSession.type, {
-            params: {offset: this.offset, limit: this.limit}
-        }).then(suc => {
-            var response = suc.data;
-            if (response.code == 200 && response.data) {
-                this.messageList = response.data.reverse().concat(his.messageList.concat);
-            }
-        });
-        this.messageList = [
-            {
-                id: 12,
-                uid: 2,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                nickname: '张三',
-                content: '没细看日志，之前是有这个的',
-                type: 'text'
-            }, {
-                id: 13,
-                uid: 1,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                nickname: '张三',
-                content: '没细看日志，之前是有这个的',
-                type: 'text'
-            },
-            {
-                id: 12,
-                uid: 2,
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                nickname: '张三',
-                content: `SELECT b.dealid
-from origindb.wwwdeal__dealbizacct as b
-JOIN origindb.wwwdeal__deal as c
-on b.dealid = c.id
-WHERE b.bizacctid in (
-  SELECT DISTINCT(a.bizacctid)
-  FROM origindb.meituanverify_meituanverify__allverifylog as a
-  WHERE a.id >= 7431016249
-  AND a.bizacctid % 100 in (80, 81, 82, 83, 84)
-  AND a.verifytype in (80, 9, 101)
-)
-AND c.begintime > UNIX_TIMESTAMP('2016-10-19 00:00:00');`,
-                type: 'text'
-            }
-        ];
+
     }
 }
 </script>

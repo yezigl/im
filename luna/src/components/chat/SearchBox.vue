@@ -5,14 +5,18 @@
             <input type="text" name="search">
         </div>
         <div class="addchat">
-            <span class="iconfont icon-tianjiayonghu"></span>
+            <span class="iconfont icon-tianjiayonghu" @click="addChat"></span>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-
+    methods: {
+        addChat: function() {
+            alert('to be continued')
+        }
+    }
 }
 </script>
 
