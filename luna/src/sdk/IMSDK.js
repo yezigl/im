@@ -29,7 +29,4 @@ export class IMSDK {
             console.error('sync ntp error', response);
         });
     }
-    get messageManager() {
-        return null;
-    }
 }

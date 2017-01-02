@@ -17,8 +17,8 @@
                 <SendBox @sendMessage="sendMessage"></SendBox>
             </div>
             <div v-if="showSidebar" class="sidebar">
-                <ProfileBar v-if="curSession.type == 'chat'"></ProfileBar>
-                <GroupBar v-if="curSession.type == 'groupchat'"></GroupBar>
+                <ProfileBar v-if="curSession.type == SessionType.CHAT" :curSession="curSession"></ProfileBar>
+                <GroupBar v-if="curSession.type == SessionType.GROUPCHAT" :curSession="curSession"></GroupBar>
             </div>
         </div>
     </div>
@@ -39,6 +39,7 @@ export default {
     },
     data: function() {
         return {
+            SessionType: SessionType,
             showSidebar: true,
             messageWrapper: {},
             messageList: []
@@ -54,6 +55,7 @@ export default {
                 var response = suc.data;
                 if (response.code == 200 && response.data) {
                     this.messageList.push(response.data);
+                    delete this.messageWrapper[this.curSession.id];
                 }
             }, error => {
 
@@ -66,7 +68,7 @@ export default {
             } else if (this.curSession.type == SessionType.GROUPCHAT) {
                 params['gid'] = this.curSession.id;
             }
-            this.$http.get(config.apiServer + '/api/v1/messages/' + this.curSession.type, {
+            this.$http.get(config.apiServer + '/api/v1/messages/' + this.curSession.type.toLowerCase(), {
                 'params': params
             }).then(suc => {
                 var response = suc.data;
@@ -76,18 +78,34 @@ export default {
             });
         },
         setMessageList: function(messageList) {
-            this.messageList = messageList
+            this.messageList = messageList;
             this.$emit('showLastest');
+        },
+        pageMessages: function() {
+            var wrapper = this.messageWrapper[this.curSession.id];
+            var _this = this;
+            if (!wrapper) {
+                wrapper = {offset: 0, limit: 10, messageList: []};
+            }
+            this.fetchMessages(wrapper.offset, wrapper.limit, function(mlist) {
+                wrapper.messageList = mlist.reverse().concat(wrapper.messageList);
+                wrapper.offset += wrapper.limit;
+                _this.messageList = wrapper.messageList;
+            });
+            this.messageWrapper[this.curSession.id] = wrapper;
+            return wrapper;
         }
     },
     computed: {
         trigger: function() {
+            console.log("trigger");
             var wrapper = this.messageWrapper[this.curSession.id];
             var _this = this;
             if (!wrapper) {
                 wrapper = {offset: 0, limit: 10, messageList: []};
                 this.fetchMessages(wrapper.offset, wrapper.limit, function(mlist) {
                     wrapper.messageList = mlist.reverse().concat(wrapper.messageList);
+                    wrapper.offset += wrapper.limit;
                     _this.setMessageList(wrapper.messageList);
                 });
                 this.messageWrapper[this.curSession.id] = wrapper;
@@ -135,9 +153,6 @@ export default {
             }
             return wrapper;
         }
-    },
-    created: function() {
-
     }
 }
 </script>

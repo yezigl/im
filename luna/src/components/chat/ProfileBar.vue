@@ -16,9 +16,10 @@
 <script>
 export default {
     name: 'ProfileBar',
+    props: ['curSession'],
     data: function() {
         return {
-            personInfo: {}
+            pp: {}
         };
     },
     methods: {
@@ -26,14 +27,16 @@ export default {
 
         }
     },
-    mounted: function() {
-        this.personInfo = {
-            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile9/1129f264-bdab-43be-a481-23fd69020aaa',
-            name: '某某某',
-            email: '账号:moumoumou',
-            department: '集团/餐饮平台/到店餐饮技术部/交易与信息技术中心/订单组',
-            desc: '这是个性签名，这是个性签名'
-        };
+    computed: {
+        personInfo: function() {
+            this.$http.get(config.apiServer + '/api/v1/rosters/' + this.curSession.id).then(suc => {
+                var response = suc.data;
+                if (response.code == 200 && response.data) {
+                    this.pp = response.data;
+                }
+            });
+            return this.pp;
+        }
     }
 }
 </script>

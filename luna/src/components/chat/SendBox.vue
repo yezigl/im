@@ -67,7 +67,7 @@ export default {
         },
         sendMessage: function() {
             this.formData.append('type', this.type);
-            this.formData.append('text', this.inputText);
+            this.formData.append('content', this.inputText);
             this.formData.append('url', this.url);
             this.$emit('sendMessage', this.formData);
         }
