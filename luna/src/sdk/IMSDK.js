@@ -5,10 +5,11 @@ export class IMSDK {
         this.http = vue.$http;
     }
     start() {
-        var source = new EventSource(config.apiServer + '/sse/event/' + config.tk);
+        var source = new EventSource(config.apiServer + '/sse/event/' + config.uid);
 
         source.onmessage = function(e) {
             console.log(e.data);
+            config.bus.$emit('message', e.data);
         };
         source.onerror = function(e) {
             console.log(e)
@@ -20,10 +21,11 @@ export class IMSDK {
     }
     ntp() {
         var s = new Date().getTime();
-        this.http.get(config.apiServer + '/api/v1/ntp').then((response) => {
-            if (response.data.code == 200 && response.data.data && response.data.data.time) {
+        this.http.get(config.apiServer + '/api/v1/ntp').then((suc) => {
+            var response = suc.data;
+            if (response.code == 200 && response.data && response.data.time) {
                 var e = new Date().getTime();
-                config.time = response.data.data.time - (e - s) / 2;
+                config.time = Math.round(response.data.time - (e - s) / 2);
             }
         }, (response) => {
             console.error('sync ntp error', response);

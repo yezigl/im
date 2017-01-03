@@ -1,5 +1,5 @@
 <template>
-    <div class="personinfo-wrapper">
+    <div class="personinfo-wrapper" :trigger="trigger">
         <img class="round-avatar xlarge-avatar" @click="showProfile" :src="personInfo.avatar" />
         <div class="personinfo">
             <div class="name">{{personInfo.name}}</div>
@@ -19,7 +19,7 @@ export default {
     props: ['curSession'],
     data: function() {
         return {
-            pp: {}
+            personInfo: {}
         };
     },
     methods: {
@@ -28,14 +28,14 @@ export default {
         }
     },
     computed: {
-        personInfo: function() {
+        trigger: function() {
             this.$http.get(config.apiServer + '/api/v1/rosters/' + this.curSession.id).then(suc => {
                 var response = suc.data;
                 if (response.code == 200 && response.data) {
-                    this.pp = response.data;
+                    this.personInfo = response.data;
                 }
             });
-            return this.pp;
+            return {};
         }
     }
 }
@@ -55,6 +55,7 @@ export default {
 .personinfo .name {
     font-size: 18px;
     margin-bottom: 8px;
+    color: rgba(0,0,0,.87);
 }
 
 .personinfo .department {

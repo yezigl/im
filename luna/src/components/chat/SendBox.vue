@@ -54,9 +54,10 @@ export default {
                 this.type = MessageType.FILE;
                 alert("send normal file")
             }
-            this.fileFormData.append('file', file);
-            this.fileFormData.append('type', type);
-            this.$http.post(config.apiServer + '/api/v1/upload', this.fileFormData).then(suc => {
+            var fileFormData = new FormData();
+            fileFormData.append('file', file);
+            fileFormData.append('type', type);
+            this.$http.post(config.apiServer + '/api/v1/upload', fileFormData).then(suc => {
                 var response = suc.data;
                 if (response.code == 200 && response.data) {
                     this.url = response.data.url;
@@ -66,10 +67,19 @@ export default {
             });
         },
         sendMessage: function() {
-            this.formData.append('type', this.type);
-            this.formData.append('content', this.inputText);
-            this.formData.append('url', this.url);
-            this.$emit('sendMessage', this.formData);
+            if (!this.inputText || !this.url) {
+                alert('发送内容不能为空');
+                return;
+            }
+            var formData = new FormData();
+            formData.append('type', this.type);
+            formData.append('content', this.inputText);
+            formData.append('url', this.url);
+            this.$emit('sendMessage', formData);
+            // 置空
+            this.inputText = '';
+            this.type = MessageType.TEXT;
+            this.url = '';
         }
     }
 }

@@ -18,7 +18,7 @@
                     <span v-if="session.type == SessionType.GROUPCHAT">{{session.lastName}}：</span>
                     <span>{{session.lastContent}}</span>
                 </div>
-                <span class="time">{{session.time}}</span>
+                <span class="time" >{{session.time}}</span>
             </li>
         </ul>
     </div>

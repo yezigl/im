@@ -50,12 +50,15 @@ export default {
             this.showSidebar = !this.showSidebar;
         },
         sendMessage: function(message) {
-            alert("to be continue");
-            this.$http.post(config.apiService + '/api/v1/messages', message).then(suc => {
+            message.append('sessionType', this.curSession.type);
+            message.append('toId', this.curSession.id);
+            message.append('timestamp', config.time);
+            this.$http.post(config.apiServer + '/api/v1/messages', message).then(suc => {
                 var response = suc.data;
                 if (response.code == 200 && response.data) {
                     this.messageList.push(response.data);
                     delete this.messageWrapper[this.curSession.id];
+                    this.$emit('showLastest');
                 }
             }, error => {
 
@@ -98,7 +101,7 @@ export default {
     },
     computed: {
         trigger: function() {
-            console.log("trigger");
+            console.log("MessageBox", "trigger");
             var wrapper = this.messageWrapper[this.curSession.id];
             var _this = this;
             if (!wrapper) {
@@ -109,50 +112,25 @@ export default {
                     _this.setMessageList(wrapper.messageList);
                 });
                 this.messageWrapper[this.curSession.id] = wrapper;
-                setTimeout(function() {
-                    wrapper.messageList = [
-                        {
-                            id: 12,
-                            uid: 2,
-                            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                            nickname: '张三',
-                            content: '没细看日志，之前是有这个的',
-                            type: 'text'
-                        }, {
-                            id: 13,
-                            uid: 1,
-                            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                            nickname: '张三',
-                            content: '没细看日志，之前是有这个的',
-                            type: 'text'
-                        },
-                        {
-                            id: 12,
-                            uid: 2,
-                            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                            nickname: '张三',
-                            content: `SELECT b.dealid
-            from origindb.wwwdeal__dealbizacct as b
-            JOIN origindb.wwwdeal__deal as c
-            on b.dealid = c.id
-            WHERE b.bizacctid in (
-              SELECT DISTINCT(a.bizacctid)
-              FROM origindb.meituanverify_meituanverify__allverifylog as a
-              WHERE a.id >= 7431016249
-              AND a.bizacctid % 100 in (80, 81, 82, 83, 84)
-              AND a.verifytype in (80, 9, 101)
-            )
-            AND c.begintime > UNIX_TIMESTAMP('2016-10-19 00:00:00');`,
-                            type: 'text'
-                        }
-                    ];
-                    _this.setMessageList(wrapper.messageList);
-                }, 100)
             } else {
                 _this.setMessageList(wrapper.messageList);
             }
             return wrapper;
         }
+    },
+    mounted: function() {
+        var _this = this;
+        config.bus.$on('message', function(response) {
+            var data = JSON.parse(response);
+            if (_this.curSession.id == data.toId) {
+                // 是当前对话窗口的
+                _this.messageList.push(data);
+                delete _this.messageWrapper[_this.curSession.id];
+                _this.$emit('showLastest');
+            } else {
+
+            }
+        });
     }
 }
 </script>

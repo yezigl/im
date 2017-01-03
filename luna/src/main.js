@@ -50,6 +50,7 @@ window.config = {
 }
 if (LoginSDK.login()) {
     Vue.use(VueRouter).use(VueResource);
+    Vue.http.options.emulateJSON = true;
     var vue = new Vue({
         el: '#app',
         template: '<App/>',
@@ -58,5 +59,8 @@ if (LoginSDK.login()) {
     });
 
     var imsdk = new IMSDK(vue);
-    setTimeout(() => {imsdk.ntp()}, 1000);
+    setTimeout(() => {
+        imsdk.ntp();
+        imsdk.start();
+    }, 1000);
 }

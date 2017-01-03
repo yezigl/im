@@ -11,7 +11,7 @@
                     </div>
                     <div class="right-content">
                         <div class="person" v-if="message.uid != meUid">
-                            <span class="nickname">{{message.nickname}}</span>
+                            <span class="nickname">{{message.name}}</span>
                         </div>
                         <div class="bubble-corner-container">
                             <i class="dxicon bubble-corner left lfc dxicon-lfc"></i>

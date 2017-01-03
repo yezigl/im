@@ -31,13 +31,13 @@ export default {
     },
     methods: {
         makeChat: function(roster) {
-            console.log('create chat with ' + roster.uid);
             this.$http.post(config.apiServer + '/api/v1/sessions', {
                 toId: roster.uid,
                 type: SessionType.CHAT
-            }, suc => {
+            }).then(suc => {
+                console.log('create chat with ' + roster.uid);
                 location.href = '/#/' + SessionType.CHAT.toLowerCase() + '/' + roster.uid;
-            })
+            });
         }
     }
 }

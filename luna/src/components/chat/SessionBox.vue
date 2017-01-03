@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="sessionbox-wrapper">
-            <div class="sessionbox">
+            <div class="sessionbox" :trigger="trigger">
                 <SearchBox></SearchBox>
                 <SessionList @showSession="showSession" :sessionList="sessionList" :curSession="curSession"></SessionList>
             </div>
@@ -23,7 +23,7 @@ export default {
     data: function() {
         return {
             curSession: {},
-            sessionListWrapper: {sessionList: []},
+            sessionList: [],
             offset: 0,
             limit: 10
         };
@@ -41,7 +41,7 @@ export default {
                 session.unread = 0;
             }
             this.curSession = session;
-            location.href = '/#/' + session.type + '/' + session.id;
+            location.href = '/#/' + session.type.toLowerCase() + '/' + session.id;
             this.showLastest();
         },
         showLastest: function() {
@@ -51,67 +51,34 @@ export default {
             }, 100);
         },
         fetchSessions: function(callback) {
-            console.log(this.offset, this.limit);
+            console.log('fetchSessions', this.offset, this.limit);
             this.$http.get(config.apiServer + '/api/v1/sessions', {
                 params: {offset: this.offset, limit: this.limit}
-            }, suc => {
+            }).then(suc => {
                 var response = suc.data;
                 if (response.code == 200 && response.data) {
                     callback(response.data);
                 }
             }, error => {
-                console.log('error');
-                this.offset += this.limit;
+                console.log('fetchSessions error', error);
             });
         }
     },
     computed: {
-        sessionList: function() {
+        trigger: function() {
+            var _this = this;
             this.fetchSessions(function(sessionList) {
-                this.sessionListWrapper.sessionList = sessionList;
-                this.offset += this.limit;
+                _this.sessionList = sessionList;
                 var match = /#\/(\w+)\/(\d+)(.*)?/.exec(location.hash);
                 if (match) {
-                    var filterd = this.sessionListWrapper.sessionList.filter(e => e.id == match[2]);
-                    this.showSession(filterd.length == 0 ? null : filterd[0]);
+                    var filterd = sessionList.filter(e => e.id == match[2]);
+                    _this.showSession(filterd.length == 0 ? null : filterd[0]);
                 } else {
-                    this.showSession(null);
+                    _this.showSession(null);
                 }
             });
-            return this.sessionListWrapper.sessionList;
+            return [];
         }
-    },
-    mounted: function() {
-        var source = new EventSource(config.apiServer + '/sse/event/' + config.tk);
-
-        source.onmessage = function(e) {
-            console.log(e.data);
-        };
-        source.onerror = function(e) {
-            console.log(e)
-        }
-
-        // this.sessionList = [
-        //     {
-        //         id: 1000,
-        //         avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile4/99287bb1-8aea-47c6-b628-eaa5d3d496d5',
-        //         unread: 99,
-        //         name: '张三、李四、王五',
-        //         lastName: '张三',
-        //         lastContent: '没事 这个不影响发布',
-        //         time: '昨天',
-        //         type: 'groupchat'
-        //     }, {
-        //         id: 1001,
-        //         avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile9/1129f264-bdab-43be-a481-23fd69020aaa',
-        //         unread: 0,
-        //         name: '张三',
-        //         lastName: '张三',
-        //         lastContent: '没事 这个不影响发布',
-        //         time: '16/9/21',
-        //         type: 'chat'
-        //     }
-        // ];
     }
 }
 </script>
