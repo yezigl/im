@@ -2,6 +2,7 @@
     <div id="toolbar">
         <div class="userinfo" :title="userInfo.name">
             <img class="large-avatar round-avatar" :src="userInfo.avatar" @click="showProfile" />
+            <Profile v-if="shown" :profile="userInfo"></Profile>
         </div>
         <div class="tool">
             <div class="app-item" title="消息" v-bind:class="{ 'active': type == 'chat' }">
@@ -27,21 +28,27 @@
 </template>
 
 <script>
+import Profile from './common/Profile'
+
 export default {
     name: 'Toolbar',
     data: function() {
         var match = /#\/(\w+)(\/.*)?/.exec(location.hash);
         return {
             type: match ? match[1] : 'chat',
-            userInfo: {}
+            userInfo: {},
+            shown: false
         };
+    },
+    components: {
+        Profile
     },
     methods: {
         changeToolbar: function(type) {
             this.type = type;
         },
         showProfile: function() {
-            alert('to be continued')
+            this.trigger = !this.trigger;
         }
     },
     mounted: function() {
