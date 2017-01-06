@@ -11,7 +11,7 @@
         </div>
         <div class="message-box-wrapper" v-bind:class="{ 'show-sidebar': showSidebar }">
             <div class="message-list-wrapper" id="messageListBox">
-                <MessageList :messageList="messageList" :trigger="trigger"></MessageList>
+                <MessageList :messageList="messageList"></MessageList>
             </div>
             <div class="sendbox-wrapper">
                 <SendBox @sendMessage="sendMessage"></SendBox>
@@ -50,9 +50,9 @@ export default {
             this.showSidebar = !this.showSidebar;
         },
         sendMessage: function(message) {
-            message.append('sessionType', this.curSession.type);
-            message.append('toId', this.curSession.id);
-            message.append('timestamp', config.time);
+            message['sessionType'] = this.curSession.type;
+            message['toId'] = this.curSession.id;
+            message['timestamp'] = config.time;
             this.$http.post(config.apiServer + '/api/v1/messages', message).then(suc => {
                 var response = suc.data;
                 if (response.code == 200 && response.data) {
@@ -89,23 +89,6 @@ export default {
             var _this = this;
             if (!wrapper) {
                 wrapper = {offset: 0, limit: 10, messageList: []};
-            }
-            this.fetchMessages(wrapper.offset, wrapper.limit, function(mlist) {
-                wrapper.messageList = mlist.reverse().concat(wrapper.messageList);
-                wrapper.offset += wrapper.limit;
-                _this.messageList = wrapper.messageList;
-            });
-            this.messageWrapper[this.curSession.id] = wrapper;
-            return wrapper;
-        }
-    },
-    computed: {
-        trigger: function() {
-            console.log("MessageBox", "trigger");
-            var wrapper = this.messageWrapper[this.curSession.id];
-            var _this = this;
-            if (!wrapper) {
-                wrapper = {offset: 0, limit: 10, messageList: []};
                 this.fetchMessages(wrapper.offset, wrapper.limit, function(mlist) {
                     wrapper.messageList = mlist.reverse().concat(wrapper.messageList);
                     wrapper.offset += wrapper.limit;
@@ -113,7 +96,7 @@ export default {
                 });
                 this.messageWrapper[this.curSession.id] = wrapper;
             } else {
-                _this.setMessageList(wrapper.messageList);
+                this.setMessageList(wrapper.messageList);
             }
             return wrapper;
         }
@@ -122,15 +105,17 @@ export default {
         var _this = this;
         config.bus.$on('message', function(response) {
             var data = JSON.parse(response);
-            if (_this.curSession.id == data.toId) {
-                // 是当前对话窗口的
+            // 是当前对话窗口的
+            if (_this.curSession.id == data.uid) {
                 _this.messageList.push(data);
-                delete _this.messageWrapper[_this.curSession.id];
                 _this.$emit('showLastest');
-            } else {
-
             }
+            delete _this.messageWrapper[data.id];
         });
+        this.pageMessages();
+        this.$watch('curSession', function(n, o) {
+            this.pageMessages();
+        })
     }
 }
 </script>
@@ -160,7 +145,6 @@ export default {
     position: absolute;
     transform: rotate(45deg);
     background-color: #f3f5f7;
-    z-index: 1;
     width: 20px;
     height: 20px;
     border-left: 1px solid #D1D4D8;

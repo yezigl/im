@@ -5,16 +5,19 @@ export class IMSDK {
         this.http = vue.$http;
     }
     start() {
-        var source = new EventSource(config.apiServer + '/sse/event/' + config.uid);
+        var source = new EventSource(config.apiServer + '/sse/event/' + config.uid + '/' + config.tk, { withCredentials: true });
 
-        source.onmessage = function(e) {
-            console.log(e.data);
+        source.addEventListener('message', function(e) {
+            console.log('message', e.data);
             config.bus.$emit('message', e.data);
-        };
-        source.onerror = function(e) {
-            console.log(e)
-        }
-
+        });
+        source.addEventListener('session', function(e) {
+            console.log('session', e.data);
+            config.bus.$emit('session', e.data);
+        });
+        source.addEventListener('error', function(e) {
+            console.log('error', e);
+        });
     }
     heartBeat() {
 

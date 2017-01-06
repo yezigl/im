@@ -10,7 +10,7 @@
                 </div>
                 <div class="extrainfo">
                     <div class="desc-label">个性签名</div>
-                    <div class="desc">{{rosterInfo.desc}}</div>
+                    <div class="desc">{{rosterInfo.signature}}</div>
                 </div>
                 <button class="chat-button button button-primary" v-if="rosterInfo.uid != me" @click="makeChat(rosterInfo)">发起聊天</button>
             </div>
@@ -36,6 +36,7 @@ export default {
                 type: SessionType.CHAT
             }).then(suc => {
                 console.log('create chat with ' + roster.uid);
+                config.bus.$emit('makechat');
                 location.href = '/#/' + SessionType.CHAT.toLowerCase() + '/' + roster.uid;
             });
         }

@@ -6,16 +6,27 @@
             </span>
             <span class="fileupload">
                 <i class="iconfont icon-fasongwenjian" @click="uploadFile"></i>
-                <input type="file" id="uploadFile" @change="onAddFile" style="display: none">
+                <input type="file" id="uploadFile" @change="onAddFile" v-if="upload" style="display: none">
             </span>
         </div>
         <div class="input-wrapper">
-            <textarea id="inputText" name="inputText" v-model="inputText" placeholder="说点什么……"></textarea>
+            <textarea id="inputText" name="inputText" v-model="inputText" placeholder="说点什么……" @keyup.shift.enter.prevent="doSendMessage" @keyup.enter.prevent="doSendMessage"></textarea>
         </div>
         <div class="send-wrapper">
             <div>
                 <span class="send-tip">Shift + Enter 换行, Enter 发送</span>
                 <button type="button" @click="sendMessage" class="send-button button button-primary button-sm">发&nbsp;送</button>
+            </div>
+        </div>
+        <div class="upload-mask-wrapper" v-if="url">
+            <div class="upload-mask">
+                <div class="preview">
+                    <img :src="url">
+                </div>
+                <div class="btnbar">
+                    <button class="button" @click="url = ''">取消</button>
+                    <button class="button button-primary" @click="sendMessage">发送</button>
+                </div>
             </div>
         </div>
     </div>
@@ -29,11 +40,10 @@ export default {
     data: function() {
         return {
             inputText: '',
-            imageRegExp: /(gif|jpeg|jpg|png|bmp)$/,
+            imageRegExp: /(gif|jpeg|jpg|png|bmp)$/i,
             type: MessageType.TEXT,
             url: '',
-            fileFormData: new FormData(),
-            formData: new FormData()
+            upload: false
         };
     },
     methods: {
@@ -42,44 +52,53 @@ export default {
             alert("to be continue");
         },
         uploadFile: function() {
-            document.getElementById('uploadFile').click();
+            this.upload = true;
+            setTimeout(() => {document.getElementById('uploadFile').click()}, 100);
         },
         onAddFile: function(event) {
             var file = event.target.files[0];
             var fileName = file.name;
             if (this.imageRegExp.test(fileName)) {
                 this.type = MessageType.IMAGE;
-                alert("send image")
+                console.log("send image")
             } else {
                 this.type = MessageType.FILE;
-                alert("send normal file")
+                console.log("send normal file")
             }
             var fileFormData = new FormData();
             fileFormData.append('file', file);
-            fileFormData.append('type', type);
-            this.$http.post(config.apiServer + '/api/v1/upload', fileFormData).then(suc => {
+            fileFormData.append('type', this.type);
+            this.$http.post(config.apiServer + '/api/v1/image/upload', fileFormData).then(suc => {
                 var response = suc.data;
                 if (response.code == 200 && response.data) {
                     this.url = response.data.url;
                 }
             }, error => {
-
             });
+            this.upload = false;
         },
         sendMessage: function() {
-            if (!this.inputText || !this.url) {
+            console.log(!this.inputText.trim(), !this.url, !this.inputText && !this.url);
+            if (!this.inputText.trim() && !this.url) {
                 alert('发送内容不能为空');
                 return;
             }
-            var formData = new FormData();
-            formData.append('type', this.type);
-            formData.append('content', this.inputText);
-            formData.append('url', this.url);
-            this.$emit('sendMessage', formData);
+            var params = {};
+            params['type'] = this.type;
+            params['content'] = this.inputText || this.url;
+            this.$emit('sendMessage', params);
             // 置空
             this.inputText = '';
             this.type = MessageType.TEXT;
             this.url = '';
+        },
+        doSendMessage: function(event) {
+            if (event.shiftKey) {
+                event.returnValue = false;
+            } else {
+                event.returnValue = false;
+                this.sendMessage();
+            }
         }
     }
 }
@@ -146,5 +165,33 @@ export default {
     height: 30px;
     font-size: 12px;
     color: rgba(0,0,0,.38);
+}
+
+.upload-mask-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top:0;
+    z-index: 1000;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.upload-mask {
+    width: 400px;
+    margin: 100px auto;
+}
+
+.preview {
+}
+
+.preview img {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.btnbar {
+    margin-top: 15px;
 }
 </style>

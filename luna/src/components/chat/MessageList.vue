@@ -7,7 +7,7 @@
             <div class="message-item-wrapper" v-for="message in messageList" v-bind:class="message.uid == meUid ? 'me' : 'you'">
                 <div class="message-item">
                     <div class="avatar">
-                        <img class="medium-avatar" :src="message.avatar">
+                        <img class="medium-avatar" :src="message.avatar" @click="showProfile(message.uid)">
                     </div>
                     <div class="right-content">
                         <div class="person" v-if="message.uid != meUid">
@@ -18,7 +18,8 @@
                         </div>
                         <div class="message-container">
                             <div class="content">
-                                <pre>{{message.content}}</pre>
+                                <pre v-if="message.type == MessageType.TEXT">{{message.content}}</pre>
+                                <img v-if="message.type == MessageType.IMAGE" :src="message.content">
                             </div>
                         </div>
                     </div>
@@ -29,6 +30,8 @@
 </template>
 
 <script>
+import {MessageType} from '../../sdk/Config'
+
 export default {
     name: 'MessageList',
     props: ['messageList'],
@@ -37,11 +40,14 @@ export default {
     },
     data: function() {
         return {
-            meUid: config.uid
+            meUid: config.uid,
+            MessageType: MessageType
         };
     },
     methods: {
-
+        showProfile: function(uid) {
+            config.bus.$emit('profile', uid, event);
+        }
     }
 }
 </script>
@@ -149,6 +155,13 @@ export default {
     word-break: break-word;
     word-wrap: break-word;
     white-space: pre-wrap;
+    padding: 8px 11px;
+    margin: 0;
+}
+
+.message-item .content img {
+    max-width: 300px;
+    max-height: 300px;
     padding: 8px 11px;
     margin: 0;
 }

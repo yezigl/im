@@ -2,7 +2,6 @@
     <div id="toolbar">
         <div class="userinfo" :title="userInfo.name">
             <img class="large-avatar round-avatar" :src="userInfo.avatar" @click="showProfile" />
-            <Profile v-if="shown" :profile="userInfo"></Profile>
         </div>
         <div class="tool">
             <div class="app-item" title="消息" v-bind:class="{ 'active': type == 'chat' }">
@@ -36,22 +35,22 @@ export default {
         var match = /#\/(\w+)(\/.*)?/.exec(location.hash);
         return {
             type: match ? match[1] : 'chat',
-            userInfo: {},
-            shown: false
+            userInfo: {}
         };
     },
     components: {
-        Profile
     },
     methods: {
         changeToolbar: function(type) {
             this.type = type;
+            this.hash = '/#/' + type;
         },
-        showProfile: function() {
-            this.trigger = !this.trigger;
+        showProfile: function(event) {
+            config.bus.$emit('profile', config.uid, event);
         }
     },
     mounted: function() {
+        var _this = this;
         this.$http.get(config.apiServer + '/api/v1/rosters/' + config.uid).then(suc => {
             var response = suc.data;
             if (response.code == 200 && response.data) {
@@ -59,6 +58,9 @@ export default {
             }
         }, error => {
 
+        });
+        config.bus.$on('makechat', function() {
+            _this.type = 'chat';
         });
     }
 }

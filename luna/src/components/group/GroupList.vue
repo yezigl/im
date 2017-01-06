@@ -1,10 +1,10 @@
 <template>
     <div class="grouplist-wrapper">
         <ul class="grouplist">
-            <li class="group" @click="showGroupInfo">
-                <img class="large-avatar avatar" src="http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile4/99287bb1-8aea-47c6-b628-eaa5d3d496d5">
+            <li class="group" v-for="group in groupList" @click="showGroupInfo(group.id)">
+                <img class="large-avatar avatar" :src="group.avatar">
                 <div class="name">
-                    <span>辛孟莹、李德华、于吉星</span>
+                    <span>{{group.name}}</span>
                 </div>
             </li>
         </ul>
@@ -14,9 +14,10 @@
 <script>
 export default {
     name: 'GroupList',
+    props: ['groupList'],
     methods: {
-        showGroupInfo: function() {
-
+        showGroupInfo: function(gid) {
+            this.$emit('showGroupInfo', gid);
         }
     }
 }

@@ -28,7 +28,7 @@ export default {
             this.rosterInfo = roster;
         }
     },
-    created: function() {
+    mounted: function() {
         this.$http.get(config.apiServer + '/api/v1/rosters').then(suc => {
             var response = suc.data;
             if (response.code == 200 && response.data) {
@@ -36,7 +36,7 @@ export default {
             }
         }, error => {
 
-        })
+        });
     }
 }
 </script>

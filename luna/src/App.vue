@@ -4,16 +4,18 @@
         <div id="main">
             <router-view></router-view>
         </div>
+        <Profile></Profile>
     </div>
 </template>
 
 <script>
 import Toolbar from './components/Toolbar'
+import Profile from './components/common/Profile'
 
 export default {
     name: 'app',
     components: {
-        Toolbar
+        Toolbar, Profile
     }
 }
 </script>
@@ -29,6 +31,7 @@ html, body {
     padding: 0;
     font-family: Helvetica Neue,Helvetica,Arial,PingFang SC,Heiti SC,Hiragino Sans GB,Microsoft YaHei,\\5FAE\8F6F\96C5\9ED1,sans-serif;
     -webkit-font-smoothing: antialiased;
+    color: rgba(0,0,0,.87);
 }
 
 pre {
@@ -63,6 +66,11 @@ li {
 }
 
 .xlarge-avatar {
+    width: 60px;
+    height: 60px;
+}
+
+.xxlarge-avatar {
     width: 80px;
     height: 80px;
 }
