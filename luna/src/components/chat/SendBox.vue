@@ -3,6 +3,16 @@
         <div class="tool-wrapper">
             <span class="emoji">
                 <i class="iconfont icon-xiaolian" @click="showEmoji"></i>
+                <div class="emoji-wrapper" v-show="emoji">
+                    <div class="classic-panel">
+                        <div>
+                            <span v-for="emoji in EmojiClassic" class="emoji-icon" :title="emoji[0]" :ubb="emoji[1]" @click="sendEmoji(emoji[1])">
+                                <img :src="emoji[2]">
+                            </span>
+                        </div>
+                    </div>
+                    <span class="arrow"></span>
+                </div>
             </span>
             <span class="fileupload">
                 <i class="iconfont icon-fasongwenjian" @click="uploadFile"></i>
@@ -29,27 +39,39 @@
                 </div>
             </div>
         </div>
+        <div class="emoji-mask-wrapper" v-if="emoji" @click.self="emoji = false">
+        </div>
     </div>
 </template>
 
 <script>
-import {MessageType} from '../../sdk/Config'
+import {MessageType, EmojiClassic} from '../../sdk/Config'
 
 export default {
     name: 'SendBox',
     data: function() {
         return {
+            EmojiClassic: EmojiClassic,
             inputText: '',
             imageRegExp: /(gif|jpeg|jpg|png|bmp)$/i,
             type: MessageType.TEXT,
             url: '',
-            upload: false
+            upload: false,
+            emoji: false
         };
     },
     methods: {
-        showEmoji: function() {
+        showEmoji: function(event) {
             this.type = MessageType.EMOJI;
-            alert("to be continue");
+            var x = event.target.x, y = event.target.y;
+            var w = event.target.clientWidth, h = event.target.clientHeight;
+            this.vstyle = 'left: ' + (x - 204 + w / 2) + 'px; top: ' + (h - 170) + 'px;'
+            this.emoji = !this.emoji;
+        },
+        sendEmoji: function(em) {
+            this.inputText = em;
+            this.emoji = false;
+            this.sendMessage();
         },
         uploadFile: function() {
             this.upload = true;
@@ -73,12 +95,12 @@ export default {
                 if (response.code == 200 && response.data) {
                     this.url = response.data.url;
                 }
-            }, error => {
+            }, err => {
+                alert(err.data);
             });
             this.upload = false;
         },
         sendMessage: function() {
-            console.log(!this.inputText.trim(), !this.url, !this.inputText && !this.url);
             if (!this.inputText.trim() && !this.url) {
                 alert('发送内容不能为空');
                 return;
@@ -118,6 +140,7 @@ export default {
 .sendbox .tool-wrapper .emoji {
     margin-left: 20px;
     font-size: 22px;
+    position: relative;
 }
 
 .sendbox .tool-wrapper .fileupload {
@@ -193,5 +216,60 @@ export default {
 
 .btnbar {
     margin-top: 15px;
+}
+
+.emoji-mask-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top:0;
+    z-index: 9;
+}
+
+.emoji-wrapper {
+    position: absolute;
+    width: 408px;
+    bottom: 35px;
+    left: -197px;
+    background-color: #fff;
+    z-index: 10;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,.24);
+    border-radius: 4px;
+}
+
+.emoji-wrapper .arrow {
+    bottom: -6px;
+    position: absolute;
+    transform: rotate(45deg);
+    background-color: #fff;
+    width: 12px;
+    height: 12px;
+    left: 201px;
+}
+
+.emoji-wrapper .classic-panel {
+    padding: 10px 12px;
+}
+
+.emoji-wrapper .classic-panel .emoji-icon {
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    display: inline-block;
+    box-sizing: content-box;
+}
+
+.emoji-wrapper .classic-panel .emoji-icon:hover {
+    background-color: #f4faff;
+}
+
+.emoji-wrapper .classic-panel .emoji-icon img {
+    width: 24px;
+    height: 24px;
+    vertical-align: top;
 }
 </style>

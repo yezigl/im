@@ -7,6 +7,7 @@
         <div class="addchat">
             <span class="iconfont icon-tianjiaqunliao" @click="addChat" title="发起聊天"></span>
         </div>
+        <transition name="fade">
         <div v-if="add" class="addchat-wrapper" @keyup.esc="add = false">
             <div class="header">
                 <div class="title">发起聊天</div>
@@ -65,6 +66,7 @@
                 <button class="button button-primary" :disabled="rosterSelected.length == 0" @click="makeGroup">确 定</button>
             </div>
         </div>
+        </transition>
     </div>
 </template>
 
@@ -222,14 +224,14 @@ export default {
     box-sizing: border-box;
     height: 100%;
     position: relative;
-    margin: 15px auto 0;
+    margin: 0 auto 0;
 }
 
 .content-wrapper {
     width: 722px;
     position: absolute;
-    top: 0;
-    bottom: 100px;
+    top: 15px;
+    bottom: 85px;
     background: #fff;
     border: 1px solid rgba(0,0,0,.1);
     box-sizing: border-box;
@@ -391,5 +393,12 @@ export default {
     color: #ccc;
     background-color: #f3f5f7;
     border-color: #047eee;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+}
+.fade-enter, .fade-leave-active {
+    opacity: 0;
 }
 </style>

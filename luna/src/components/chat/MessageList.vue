@@ -20,6 +20,7 @@
                             <div class="content">
                                 <pre v-if="message.type == MessageType.TEXT">{{message.content}}</pre>
                                 <img v-if="message.type == MessageType.IMAGE" :src="message.content">
+                                <img v-if="message.type == MessageType.EMOJI" class="emoji" :src="EmojiClassic[message.content][2]">
                             </div>
                         </div>
                     </div>
@@ -30,7 +31,7 @@
 </template>
 
 <script>
-import {MessageType} from '../../sdk/Config'
+import {MessageType, EmojiClassic} from '../../sdk/Config'
 
 export default {
     name: 'MessageList',
@@ -41,7 +42,8 @@ export default {
     data: function() {
         return {
             meUid: config.uid,
-            MessageType: MessageType
+            MessageType: MessageType,
+            EmojiClassic: EmojiClassic
         };
     },
     methods: {
@@ -149,21 +151,26 @@ export default {
     font-size: 14px;
     line-height: 1.5;
     vertical-align: middle;
+    padding: 4px;
 }
 
 .message-item .content pre {
     word-break: break-word;
     word-wrap: break-word;
     white-space: pre-wrap;
-    padding: 8px 11px;
+    padding: 4px 7px;
     margin: 0;
 }
 
 .message-item .content img {
     max-width: 300px;
     max-height: 300px;
-    padding: 8px 11px;
     margin: 0;
+}
+
+.message-item .content img.emoji {
+    width: 36px;
+    height: 36px;
 }
 
 </style>

@@ -12,12 +12,12 @@
                     <span>群公告</span>
                 </div>
                 <div class="group-notice-content">
-                    <span>暂无公告</span>
+                    <span>{{groupInfo.notice ? groupInfo.notice : '暂无公告'}}</span>
                 </div>
             </div>
             <div class="group-members">
-                <div class="group-members-header">成员({{total}}人)</div>
-                <div class="group-members-add member">
+                <div class="group-members-header">成员({{members.length}}人)</div>
+                <div class="group-members-add member" @click="addGroupMembers">
                     <i class="iconfont icon-tianjia avatar"></i>
                     <span class="name">添加成员</span>
                 </div>
@@ -30,36 +30,41 @@
             </div>
         </div>
         <div class="tab-panel" @click="changeTab(2)" v-else>
-            <div class="group-notice">
-                <div class="group-name-header">
-                    <span>群名称</span>
+            <div class="tab-panel-settings">
+                <div class="group-notice">
+                    <div class="group-name-header">
+                        <span>群名称</span>
+                    </div>
+                    <div class="group-name-content">
+                        <span>{{groupInfo.name}}</span>
+                    </div>
+                    <div class="group-admin-header">
+                        <span>群管理员</span>
+                    </div>
+                    <div class="group-admin-content">
+                        <span>{{groupInfo.admin.name}}</span>
+                    </div>
                 </div>
-                <div class="group-name-content">
-                    <span>张三、李四、王五</span>
-                </div>
-                <div class="group-admin-header">
-                    <span>群管理员</span>
-                </div>
-                <div class="group-admin-content">
-                    <span>张三</span>
+                <div class="group-options">
+                    <div class="comp-switch">
+                        <span>群置顶</span>
+                        <input type="checkbox" readonly v-model="option.top" :checked="option.top == true">
+                        <div class="switch-round" @click="switchOption('top')"></div>
+                    </div>
+                    <div class="comp-switch">
+                        <span>消息免打扰</span>
+                        <input type="checkbox" readonly v-model="option.remind" :checked="option.remind == true">
+                        <div class="switch-round" @click="switchOption('remind')"></div>
+                    </div>
+                    <div class="comp-switch">
+                        <span>保存到群组列表</span>
+                        <input type="checkbox" readonly v-model="option.favor" :checked="option.favor == true">
+                        <div class="switch-round" @click="switchOption('favor')"></div>
+                    </div>
                 </div>
             </div>
-            <div class="group-options">
-                <div class="comp-switch">
-                    <span>群置顶</span>
-                    <input type="checkbox" readonly v-model="option1" :checked="option1 == true">
-                    <div class="switch-round" @click="switchOption(1)"></div>
-                </div>
-                <div class="comp-switch">
-                    <span>消息免打扰</span>
-                    <input type="checkbox" readonly v-model="option2" :checked="option2 == true">
-                    <div class="switch-round" @click="switchOption(2)"></div>
-                </div>
-                <div class="comp-switch">
-                    <span>保存到群组列表</span>
-                    <input type="checkbox" readonly v-model="option3" :checked="option3 == true">
-                    <div class="switch-round" @click="switchOption(3)"></div>
-                </div>
+            <div class="wrapper-group-button">
+                <button type="button" class="button comp-btn" @click="leaveGroup">退出群组</button>
             </div>
         </div>
     </div>
@@ -68,59 +73,50 @@
 <script>
 export default {
     name: 'GroupBar',
+    props: ['curSession'],
     data: function() {
         return {
             groupInfo: {},
             members: [],
-            total: 3,
             currentTab: 1,
-            option1: false,
-            option2: false,
-            option3: false
+            option: {top: false, remind: false, favor: false}
         };
     },
     methods: {
         changeTab: function(num) {
             this.currentTab = num;
         },
-        switchOption: function(id) {
-            switch (id) {
-                case 1:
-                    this.option1 = !this.option1;
-                    break;
-                case 2:
-                    this.option2 = !this.option2;
-                    break;
-                case 3:
-                    this.option3 = !this.option3;
-                    break;
-                default:
-
-            }
+        addGroupMembers: function() {
+            alert('to be continued')
+        },
+        switchOption: function(op) {
+            var params = {};
+            params[op] = !this.option[op];
+            this.$http.post(config.apiServer + '/api/v1/groups/' + this.curSession.id + '/' + op, params).then(suc => {
+                this.option[op] = !this.option[op];
+                console.log(suc.data);
+            }, err => {
+                alert('500');
+            });
+        },
+        leaveGroup: function() {
+            alert('to be continued')
         }
     },
     mounted: function() {
-        this.groupInfo = {
-            avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-            name: '某某某',
-            email: '账号:moumoumou',
-            department: '集团/餐饮平台/到店餐饮技术部/交易与信息技术中心/订单组',
-            desc: '这是个性签名，这是个性签名'
-        };
-        this.members = [
-            {
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                name: '张三'
-            },
-            {
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                name: '李四光'
-            },
-            {
-                avatar: 'http://s3-img.meituan.net/v1/mss_491cda809310478f898d7e10a9bb68ec/profile14/a306ae07-f678-4ac3-b3e6-c1d6deacd25c_200_200',
-                name: '王五六'
+        this.$http.get(config.apiServer + '/api/v1/groups/' + this.curSession.id).then(suc => {
+            var response = suc.data;
+            if (response.code == 200 && response.data) {
+                this.groupInfo = response.data;
+                this.option = this.groupInfo.option;
             }
-        ];
+        });
+        this.$http.get(config.apiServer + '/api/v1/groups/' + this.curSession.id + '/members').then(suc => {
+            var response = suc.data;
+            if (response.code == 200 && response.data) {
+                this.members = response.data;
+            }
+        });
     }
 }
 </script>
@@ -179,13 +175,21 @@ export default {
     color: rgba(0,0,0,.87);
 }
 
-.group-members {
+.group-members-list {
+    position: absolute;
+    bottom: 0;
+    top: 315px;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
 
+.group-members {
 }
 
 .group-members-header {
     color: rgba(0,0,0,.5);
-    padding: 24px 0 0 20px;
+    padding: 18px 0 0 20px;
 }
 
 .member {
@@ -220,6 +224,14 @@ export default {
 .member .avatar {
     float: left;
     margin-right: 10px;
+}
+
+.tab-panel-settings {
+    position: absolute;
+    top: 40px;
+    bottom: 38px;
+    width: 100%;
+    overflow: auto;
 }
 
 .group-options {
@@ -276,4 +288,18 @@ export default {
     transform: translateX(20px);
 }
 
+.wrapper-group-button {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+}
+
+.wrapper-group-button button {
+    width: 100%;
+    color: #ff5d4a;
+    background-color: #f3f5f7;
+    border: solid rgba(0,0,0,.05);
+    border-width: 1px 0 0;
+}
 </style>
