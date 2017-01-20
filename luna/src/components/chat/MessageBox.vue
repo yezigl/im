@@ -5,7 +5,7 @@
                 <span>{{curSession.name}}</span>
             </div>
             <div class="profile" v-bind:class="{ 'show-sidebar': showSidebar }">
-                <span class="iconfont icon-yonghu" v-on:click="toggleSidebar"></span>
+                <span class="iconfont icon-yonghu" v-on:click="this.showSidebar = !this.showSidebar"></span>
                 <span class="arrow-top"></span>
             </div>
         </div>
@@ -42,13 +42,12 @@ export default {
             SessionType: SessionType,
             showSidebar: true,
             messageWrapper: {},
-            messageList: []
+            messageList: [],
+            loading: true,
+            nomore: false
         };
     },
     methods: {
-        toggleSidebar: function() {
-            this.showSidebar = !this.showSidebar;
-        },
         sendMessage: function(message) {
             message['sessionType'] = this.curSession.type;
             message['toId'] = this.curSession.id;
@@ -60,9 +59,13 @@ export default {
                     delete this.messageWrapper[this.curSession.id];
                     this.$emit('showLastest');
                 }
-            }, error => {
+            }, err => {
 
             });
+            // 广播消息发送
+            message['fake'] = true;
+            message['sending'] = true;
+            config.bus.$emit('sendmessage', message);
         },
         fetchMessages: function(offset, limit, callback) {
             var params = {'offset': offset, 'limit': limit};
@@ -82,9 +85,12 @@ export default {
         },
         setMessageList: function(messageList) {
             this.messageList = messageList;
+            this.loading = false;
+            this.nomore = messageList.length == 0;
             this.$emit('showLastest');
         },
         pageMessages: function() {
+            this.loading = true;
             var wrapper = this.messageWrapper[this.curSession.id];
             var _this = this;
             if (!wrapper) {
@@ -112,8 +118,12 @@ export default {
             }
             delete _this.messageWrapper[data.id];
         });
+        config.bus.$on('sendmessage', function(message) {
+            // TODO 处理messageList
+        });
         this.pageMessages();
         this.$watch('curSession', function(n, o) {
+            this.messageList = [];
             this.pageMessages();
         })
     }

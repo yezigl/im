@@ -97,6 +97,9 @@ export default {
                 _this.readSession(session)
             }
         });
+        config.bus.$on('sendmessage', function(message) {
+            // TODO 处理sessionList
+        });
     }
 }
 </script>

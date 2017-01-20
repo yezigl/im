@@ -1,7 +1,10 @@
 <template>
     <div class="message-list-box">
         <div>
-            <div class="loading-wrapper loaded">没有更多数据了</div>
+            <div class="loading-wrapper">
+                <span v-if="loading" class="loading"><img src="/static/img/loading.gif" >加载中<span>
+                <span v-if="nomore" class="loaded">没有更多数据了<span>
+            </div>
         </div>
         <div class="message-list">
             <div class="message-item-wrapper" v-for="message in messageList" v-bind:class="message.uid == meUid ? 'me' : 'you'">
@@ -35,7 +38,7 @@ import {MessageType, EmojiClassic} from '../../sdk/Config'
 
 export default {
     name: 'MessageList',
-    props: ['messageList'],
+    props: ['messageList', 'loading', 'nomore'],
     components : {
 
     },
@@ -60,6 +63,19 @@ export default {
     padding: 10px;
     color: rgba(0,0,0,.38);
     cursor: pointer;
+}
+
+.loading {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    margin-left: -16px;
+    font-size: 10px;
+}
+
+.loading img {
+    width: 16px;
+    height: 16px;
 }
 
 .loaded {
