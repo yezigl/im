@@ -32,7 +32,7 @@ import Profile from './common/Profile'
 export default {
     name: 'Toolbar',
     data: function() {
-        var match = /#\/(\w+)(\/.*)?/.exec(location.hash);
+        var match = /#\/(\w+)(\/.*)?/.exec(e.hash);
         return {
             type: match ? match[1] : 'chat',
             userInfo: {}
